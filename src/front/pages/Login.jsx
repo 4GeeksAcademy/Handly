@@ -1,35 +1,36 @@
 import { useNavigate } from "react-router-dom"
-import LoginForm from "../components/LoginForm"
-import  useGlobalReducer  from "../hooks/useGlobalReducer"
+import {LoginForm} from "../components/LoginForm"
+import useGlobalReducer from "../hooks/useGlobalReducer"
 
 
 export const LoginPage = () => {
 
-    const { store, actions } = useGlobalReducer()
+        const { store, dispatch } = useGlobalReducer()
 
-    const navigate = useNavigate()
+        const navigate = useNavigate()
 
-    const handleLogin = async ({email, password}) => {
-        const success = await actions.login(email, password)
-        console.log("actions:", actions)
+        const handleLogin = ({ email, password }) => {
+                dispatch({
+                        type: "LOGIN",
+                        payload: { email }
+                })
 
-        if (success) {
-            navigate("/")
+                navigate("/")
+
         }
-    }
- 
-    return (
-        <>
-            <h1>Hello desde loginPage</h1> 
 
-                <LoginForm
-                onSubmit={handleLogin}
-                loading={store.loading}
-                error={store.error} 
-                />
+        return (
+                <>
+                        <h1>Hello desde loginPage</h1>
 
-        </>
-    )
+                        <LoginForm
+                                onSubmit={handleLogin}
+
+                                error={store.error}
+                        />
+
+                </>
+        )
 }
 
-export default LoginPage
+

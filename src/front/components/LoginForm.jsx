@@ -1,7 +1,8 @@
 import { useState } from "react"
+import { Link } from "react-router-dom"
 
 
-export const LoginForm = ({ onSubmit, loading = false, error = null }) => {
+export const LoginForm = ({ onSubmit, error = null }) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [errors, setErrors] = useState({})
@@ -51,7 +52,7 @@ export const LoginForm = ({ onSubmit, loading = false, error = null }) => {
                     </p>
 
                     <form onSubmit={handleSubmit} noValidate>
-                        {/* EMAIL */}
+                      
                         <div className="mb-3">
                             <label className="form-label">Email</label>
                             <input
@@ -60,14 +61,13 @@ export const LoginForm = ({ onSubmit, loading = false, error = null }) => {
                                 placeholder="usuario@email.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                disabled={loading}
                             />
                             {errors.email && (
                                 <div className="invalid-feedback">{errors.email}</div>
                             )}
                         </div>
 
-                        {/* PASSWORD */}
+
                         <div className="mb-3">
                             <label className="form-label">Contraseña</label>
                             <input
@@ -76,50 +76,22 @@ export const LoginForm = ({ onSubmit, loading = false, error = null }) => {
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                disabled={loading}
                             />
                             {errors.password && (
                                 <div className="invalid-feedback">{errors.password}</div>
                             )}
                         </div>
 
-                        {/* ERROR BACKEND */}
-                        {error && (
-                            <div className="alert alert-danger py-2 text-center">
-                                {error}
-                            </div>
-                        )}
+                        <button type="submit" className="btn btn-primary w-100">Iniciar sesión</button>
 
-                        {/* BUTTON */}
-                        <div className="d-grid mt-4">
-                            <button
-                                type="submit"
-                                className="btn btn-primary btn-lg"
-                                disabled={loading}
-                            >
-                                {loading ? (
-                                    <>
-                                        <span
-                                            className="spinner-border spinner-border-sm me-2"
-                                            role="status"
-                                            aria-hidden="true"
-                                        ></span>
-                                        Entrando...
-                                    </>
-                                ) : (
-                                    "Iniciar sesión"
-                                )}
-                            </button>
-                        </div>
                     </form>
 
-                    {/* FOOTER */}
                     <div className="text-center mt-4">
                         <small className="text-muted">
                             ¿No tienes cuenta?{" "}
-                            <a href="/register" className="text-primary fw-semibold">
+                            <Link to="/register" className="text-primary fw-semibold">
                                 Regístrate
-                            </a>
+                            </Link>
                         </small>
                     </div>
                 </div>
@@ -129,4 +101,3 @@ export const LoginForm = ({ onSubmit, loading = false, error = null }) => {
 }
 
 
-export default LoginForm
