@@ -17,7 +17,7 @@ export const RegisterForm = () => {
     const handleChange = (e) => {
         setRegisterData({
             ...registerData,
-            [e.target.name]: e.target.value,
+            [e.target.name]: e.target.value, 
         })
     }
 
