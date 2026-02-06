@@ -11,6 +11,10 @@ import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
 import { RegisterPage } from "./pages/Register";
 import { LoginPage } from "./pages/Login";
+import { Dashboard } from "./pages/Dashboard.jsx";
+import { Recover_password } from "./pages/Recover_password";
+import { Change_password } from "./pages/Change_password";
+import { Profile } from "./pages/Profile";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -31,6 +35,12 @@ export const router = createBrowserRouter(
 
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage/>} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/recover_password" element={<Recover_password />} />
+        <Route path="/change_password" element={<Change_password />} />
+        <Route path="/profile" element={<Profile />} />
+
+         
 
       </Route>
     )
