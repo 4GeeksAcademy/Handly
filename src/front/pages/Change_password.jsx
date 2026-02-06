@@ -11,7 +11,7 @@ export function Change_password(){
                    <div className="d-flex justify-content-center ">
                        <img className=" rounded " src={logo} alt="logo" style={{ width: "50px" }} />
                    </div>
-                   <h1 className="text-center">MediCare App</h1>
+                   <h1 className="text-center">Health Support</h1>
                    <p className="text-center">Sistema de Gestión Médica</p>
                    <div className="border container rounded-4 py-4 shadow" style={{ width: "450px" }}>
                        <h2 className="text-center">Recuperar Contraseña</h2>
