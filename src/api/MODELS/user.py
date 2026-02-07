@@ -1,7 +1,7 @@
-#from database.db import db
+from api.DATABASE.db import db
 from sqlalchemy import String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
-from api.database.db import db
+from api.DATABASE.db import db
 
 class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)

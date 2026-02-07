@@ -2,17 +2,17 @@ import os
 import inspect
 from flask_admin import Admin
 from . import models
-from .models import db
+#from .models import db
 from flask_admin.contrib.sqla import ModelView
-from database.db import db
-from models.User import User
-from models.Tratamiento import Tratamiento
-from models.Sintomas import Sintomas
-from models.Pruebas import Pruebas
-from models.Pacientes import Pacientes
-from models.Hipotesis import Hipotesis
-from models.Decision import Decision
-from models.Casoclinico import CasoClinico
+from api.DATABASE.db import db
+from api.MODELS.user import User
+#from models.Tratamiento import Tratamiento
+#from models.Sintomas import Sintomas
+#from models.Pruebas import Pruebas
+#from models.Pacientes import Pacientes
+#from models.Hipotesis import Hipotesis
+#from models.Decision import Decision
+#from models.Casoclinico import CasoClinico
 
 
 def setup_admin(app):
