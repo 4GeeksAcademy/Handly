@@ -1,9 +1,10 @@
+from flask import Flask, request, jsonify, Blueprint
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from api.models.user import User
 from api.database.db import db
 import bcrypt
 
-from flask import Flask, request, jsonify, Blueprint
+
 api = Blueprint('api/signin', __name__)
 
 
