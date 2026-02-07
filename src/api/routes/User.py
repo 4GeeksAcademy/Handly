@@ -5,7 +5,7 @@ from api.database.db import db
 import bcrypt
 
 
-api = Blueprint('api/signin', __name__)
+api = Blueprint('api/user', __name__)
 
 
 # Login usuario existente / para Login usamos POST (se envia info)
