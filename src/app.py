@@ -6,12 +6,12 @@ from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.DATABASE import db
+from api.database.db import db
 from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_jwt_extended import JWTManager
 
-from api.ROUTES.User import api_login
+from api.ROUTES.User import api
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
@@ -30,7 +30,8 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY") #trae la info de la clave del .env
+app.config["JWT_SECRET_KEY"] = os.getenv(
+    "JWT_SECRET_KEY")  # trae la info de la clave del .env
 
 
 MIGRATE = Migrate(app, db, compare_type=True)
@@ -78,8 +79,3 @@ def serve_any_other_file(path):
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
-
-
-
-
-
