@@ -6,13 +6,7 @@ from . import models
 from flask_admin.contrib.sqla import ModelView
 from api.database.db import db
 from api.models.user import User
-# from models.Tratamiento import Tratamiento
-# from models.Sintomas import Sintomas
-# from models.Pruebas import Pruebas
-# from models.Pacientes import Pacientes
-# from models.Hipotesis import Hipotesis
-# from models.Decision import Decision
-# from models.Casoclinico import CasoClinico
+
 
 
 def setup_admin(app):
