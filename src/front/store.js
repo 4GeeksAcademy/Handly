@@ -16,7 +16,6 @@ export const initialStore=()=>{
   }
 }
 
-
 export default function storeReducer(store, action = {}) {
   switch(action.type){
     case 'set_hello':
@@ -34,6 +33,6 @@ export default function storeReducer(store, action = {}) {
         todos: store.todos.map((todo) => (todo.id === id ? { ...todo, background: color } : todo))
       };
     default:
-      return store
+      throw Error('Unknown action.');
   }    
 }
