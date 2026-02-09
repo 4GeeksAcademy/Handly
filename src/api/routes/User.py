@@ -61,3 +61,43 @@ def newUser():
     db.session.commit()
 
     return jsonify("todo bien"), 200
+
+
+@api.route('/deleteUser/<int:id>', methods=['DELETE'])  # borrar usuario
+def deleteUser(id):
+    user = User.query.filter_by(id=id).first()
+
+    if user is None:
+        return jsonify("Usuario no existe"), 400
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify("Usuario borrado"), 200
+
+
+@api.route('/editUser/<int:id>', methods=['PUT']) #editar usuario
+def editUser(id):
+    body = request.get_json()
+    '''bytes = body["password"].encode('utf-8')
+    salt = bcrypt.gensalt()
+    password_encript = bcrypt.hashpw(bytes, salt)'''
+
+    user = User.query.filter_by(id=id).first()
+
+    editarUsuario = User (
+        first_name=body["first_name"],
+        last_name=body["last_name"],
+        email=body["email"],
+        #password=password_encript.decode(),
+    )
+
+    if user is None:
+        return jsonify("Usuario no existe"), 400
+    
+    #db.session.add(editarUsuario)
+    db.session.commit()
+    
+    return jsonify("Usuario editado con exito"), 200
+
+
