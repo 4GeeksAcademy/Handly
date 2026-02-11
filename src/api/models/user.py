@@ -1,6 +1,6 @@
 from api.database.db import db
-from sqlalchemy import String, Boolean
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, Boolean, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
 class User(db.Model):
@@ -14,9 +14,13 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
 
+
+    # products: Mapped[list["Products"]] = relationship("Products", back_populates="author")   Creo que tenemos que añadir esto para que se pueda relacionar el producto con el user
+
     def serialize(self):  # lo que devuelve el modelo cuando se utiliza
         return {
             "id": self.id,
             "email": self.email,
             # do not serialize the password, its a security breach
         }
+

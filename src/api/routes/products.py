@@ -1,12 +1,12 @@
 from flask import Blueprint, request, jsonify
-from database.db import db
-from models.Products import Products
+from api.database.db import db
+from api.models.Products import Products
 
 
-api = Blueprint('api/products', __name__)
+api = Blueprint('/api/products', __name__)
 
 
-@api.route('/products', methods=['POST'])  # Crear nuevo producto admin
+@api.route('/create', methods=['POST'])  # Crear nuevo producto admin
 def new_product():
     body = request.get_json()
 
@@ -31,21 +31,38 @@ def new_product():
 
     )
 
-    db.session.add(new_product)  # metodo para guardar los productos en la DB
-    # para cerrar los cambios (siempre que agregamos, editamos, eliminamos cosas)
+    db.session.add(new_product)  
     db.session.commit()
 
     return jsonify({"message": "Creado correctamente", "id": new_product.id}), 200
 
 
-@api.route('/products/<int:product_id>', methods=['GET'])
-@api.route('/products/<int:product_id>', methods=['PUT'])
+@api.route('/get_product/<int:product_id>', methods=['GET'])    # Obtener producto por ID
+def get_product(product_id):    
+    print("hola")
+    product = Products.query.filter_by(id=product_id).first()
+
+    if product is None:
+        return jsonify({"error": "Producto no encontrado"}), 404
+
+    return jsonify({
+        "id": product.id,
+        "user_id": product.user_id,
+        "description": product.description,
+        "location": product.location,
+        "shipping": product.shipping,
+        "title": product.title,
+        "images": product.images,
+        "price": product.price
+    }), 200
+
+
+@api.route('/update_product/<int:product_id>', methods=['PUT'])
 def update_product(product_id):
     body = request.get_json()
 
     product = Products.query.filter_by(
-        id=product_id,
-        user_id=body.get("user_id")).first()
+        id=product_id).first()
 
     if product is None:
         return jsonify({"error": "Producto no encontrado"}), 404
@@ -60,13 +77,23 @@ def update_product(product_id):
         images=body.get("images", product.images),
         price=body.get("price", product.price)
 
-
     )
 
+   
+    db.session.commit()
 
-db.session.commit()
-
-return jsonify({"message": "Producto actualizado correctamente", "id": update_product.id}), 200
+    return jsonify({"message": "Producto actualizado correctamente", "id": update_product.id}), 200
 
 
-@api.route('/products/<int:product_id>', methods=['DELETE'])
+
+
+
+@api.route('/delete_product/<int:product_id>', methods=['DELETE'])
+def delete_product(product_id):
+    product = Products.query.filter_by(id=product_id).first()
+
+
+    db.session.delete(product)
+    db.session.commit() 
+
+    return jsonify({"message": "Producto eliminado correctamente"}), 200
