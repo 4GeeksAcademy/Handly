@@ -9,14 +9,14 @@ class Products(db.Model):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     author = relationship("User", back_populates="products")
 
-    title: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    title: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[str] = mapped_column(String(255), nullable=True)
     price: Mapped[float] = mapped_column(nullable=False)
     images: Mapped[str] = mapped_column(nullable=False)
     location: Mapped[str] = mapped_column(String(100), nullable=False)
     shipping: Mapped[bool] = mapped_column(nullable=False)
 
-    products = relationship("Products", back_populates="author")
+    # products = relationship("User", back_populates="products")
 
  
 

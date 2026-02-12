@@ -97,3 +97,10 @@ def delete_product(product_id):
     db.session.commit() 
 
     return jsonify({"message": "Producto eliminado correctamente"}), 200
+
+
+@api.route('/products', methods=['GET'])
+def get_products():
+    products = Products.query.order_by(Products.id.desc()).limit(20).all() # Traer como max 20 productos
+
+    return jsonify([product.serialize() for product in products]), 200
