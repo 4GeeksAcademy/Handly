@@ -15,6 +15,8 @@ from flask_jwt_extended import JWTManager
 from api.routes.User import api
 
 import api.routes.products as api_products
+
+import api.routes.category as api_category
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
@@ -51,6 +53,8 @@ setup_commands(app)
 app.register_blueprint(api, url_prefix='/api/user')
 
 app.register_blueprint(api_products.api, url_prefix='/api/products')
+
+app.register_blueprint(api_category.api, url_prefix='/api/categories')
 # Handle/serialize errors like a JSON object
 
 

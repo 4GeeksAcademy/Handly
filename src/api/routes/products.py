@@ -3,6 +3,7 @@ from api.database.db import db
 from api.models.Products import Products
 
 
+
 api = Blueprint('/api/products', __name__)
 
 
@@ -67,22 +68,20 @@ def update_product(product_id):
     if product is None:
         return jsonify({"error": "Producto no encontrado"}), 404
 
-    update_product = Products(
-        id=product_id,
-        user_id=body["user_id"],
-        description=body["description"],
-        location=body.get("location", product.location),
-        shipping=body.get("shipping", product.shipping),
-        title=body.get("title", product.title),
-        images=body.get("images", product.images),
-        price=body.get("price", product.price)
+    product.user_id = body.get("user_id", product.user_id)
+    product.description = body.get("description", product.description)
+    product.location = body.get("location", product.location)
+    product.shipping = body.get("shipping", product.shipping)
+    product.title = body.get("title", product.title)
+    product.images = body.get("images", product.images)
+    product.price = body.get("price", product.price)
 
-    )
+    
 
    
     db.session.commit()
 
-    return jsonify({"message": "Producto actualizado correctamente", "id": update_product.id}), 200
+    return jsonify({"message": "Producto actualizado correctamente", "id": product.id}), 200
 
 
 
@@ -104,3 +103,4 @@ def get_products():
     products = Products.query.order_by(Products.id.desc()).limit(20).all() # Traer como max 20 productos
 
     return jsonify([product.serialize() for product in products]), 200
+
