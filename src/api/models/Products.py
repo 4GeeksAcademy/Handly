@@ -33,7 +33,8 @@ class Products(db.Model):
             "price": self.price,
             "images": self.images,
             "location": self.location,
-            "shipping": self.shipping
+            "shipping": self.shipping,
+            "category_id": self.category_id,
         }
 
 

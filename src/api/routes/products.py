@@ -10,6 +10,8 @@ api = Blueprint('/api/products', __name__)
 @api.route('/create', methods=['POST'])  # Crear nuevo producto admin
 def new_product():
     body = request.get_json()
+    print("body", body )
+    print("category_id", body.get("category_id"))
 
     if body is None:
         return jsonify({"error": "Body vacío"}), 400
@@ -19,15 +21,19 @@ def new_product():
         return jsonify({"error": "Debes incluir al menosuna imagen"}), 400
     if 'price' not in body:
         return jsonify({"error": "Debes especificar un precio"}), 400
+    if 'category_id' not in body:
+        return jsonify({"error": "Debes especificar una categoría"}), 400
+
 
     new_product = Products(
-        user_id=body["user_id"],  # usar g.user.id mejor??
+        user_id=int(body["user_id"]),  # usar g.user.id mejor??
         description=body["description"],
         location=body["location"],
         shipping=body.get("shipping", False),
         title=body["title"],
         images=body["images"],
         price=body["price"],
+        category_id=int(body["category_id"] )
 
 
     )

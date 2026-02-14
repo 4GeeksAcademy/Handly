@@ -17,20 +17,21 @@ def get_products_by_category(category_name):
 
     return jsonify([product.serialize() for product in products]), 200
 
-@api.route('/categories', methods=['POST']) # Crear categoria
+@api.route('/create_category', methods=['POST']) # Crear categoria
 def create_category():
     body = request.get_json()
 
     if body is None:
-        return jsonify("Campos vacios"), 400
+        return jsonify({"error": "Campos vacios"}), 400
     if 'name' not in body:
-        return jsonify("Debes especificar un nombre"), 400
+        return jsonify({"error": "Debes especificar un nombre"}), 400
+    
 
     new_category = Category(
         name=body["name"]
     )
 
-   
+    db.session.add(new_category)
     db.session.commit()
 
     return jsonify({"message": "Categoria creada correctamente", "id": new_category.id}), 201
