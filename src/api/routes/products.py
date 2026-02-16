@@ -4,7 +4,8 @@ from api.models.Products import Products
 
 
 
-api = Blueprint('/api/products', __name__)
+
+api = Blueprint('api/products', __name__)
 
 
 @api.route('/create', methods=['POST'])  # Crear nuevo producto admin

@@ -3,7 +3,7 @@ from api.database.db import db
 from api.models.Products import Products
 from api.models.Category import Category
 
-api = Blueprint('/api/categories', __name__)
+api = Blueprint('api/categories', __name__)
 
 # @api.route('/categories', methods=['GET']) # Obtener todas las categorias
 # def get_categories():
