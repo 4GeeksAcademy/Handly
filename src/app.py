@@ -14,7 +14,7 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
 
-import api.routes.User as api_user
+import api.routes.user as api_user
 
 import api.routes.products as api_products
 
@@ -97,4 +97,4 @@ def serve_any_other_file(path):
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
-    app.run(host='0.0.0.0', port=PORT, debug=True)
+    app.run(host='0.0.0.0', port=PORT, debug=True, use_reloader=False) # use_reloader=False evita que se ejecute el código dos veces al iniciar el servidor

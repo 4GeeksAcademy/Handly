@@ -5,7 +5,7 @@ from . import models
 # from .models import db
 from flask_admin.contrib.sqla import ModelView
 from api.database.db import db
-from api.models.user import User
+from api.models.User import User
 from api.models.Products import Products
 
 

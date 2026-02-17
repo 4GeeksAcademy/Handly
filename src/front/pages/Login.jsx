@@ -4,13 +4,13 @@ import useGlobalReducer from "../hooks/useGlobalReducer"
 
 
 export const LoginPage = () => {
-
+        
         const { store, dispatch } = useGlobalReducer()
 
         const navigate = useNavigate()
 
         const handleLogin = async ({ email, password }) => {
-                const response = await fetch ("https://super-bassoon-69xgxp7rwq6r3rp6p-3001.app.github.dev/api/user/login", {
+                const response = await fetch ("https://super-bassoon-69xgxp7rwq6r3rp6p-3001.app.github.dev/api/user/login/", {
                         method: "POST",
                         headers: {
                                 "Content-Type": "application/json"
@@ -22,7 +22,7 @@ export const LoginPage = () => {
                 if (!response.ok){              // Si la respuesta no es exitosa, actualizamos el estado global con el mensaje de error
                         dispatch({
                                 type: "LOGIN_ERROR",
-                                payload: data.message
+                                payload: data.msg
                         })
                         return
                 }

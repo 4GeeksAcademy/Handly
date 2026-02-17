@@ -1,3 +1,5 @@
+print("-----------------Product blueprint cargado")
+
 from flask import Blueprint, request, jsonify
 from api.database.db import db
 from api.models.Products import Products
@@ -11,6 +13,7 @@ api = Blueprint('api/products', __name__)
 @api.route('/create', methods=['POST'])  # Crear nuevo producto admin
 def new_product():
     body = request.get_json()
+
     print("body", body )
     print("category_id", body.get("category_id"))
 

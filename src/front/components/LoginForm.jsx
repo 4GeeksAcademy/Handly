@@ -36,7 +36,8 @@ export const LoginForm = ({ onSubmit, error = null }) => {
         }
 
         setErrors({})
-        onSubmit({ email, password })
+        
+        onSubmit({ email, password }) 
 
 
     }
