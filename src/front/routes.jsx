@@ -40,6 +40,10 @@ export const router = createBrowserRouter(
         <Route path="/change_password" element={<Change_password />} />
         <Route path="/profile" element={<Profile />} />
 
+
+        
+
+
          
 
       </Route>
