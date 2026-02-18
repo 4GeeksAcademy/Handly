@@ -30,5 +30,5 @@ class Chat(db.Model): #datetime espera DateTime y el parametro -default, onupdat
             
         }
     
-from api.models.user import User
+from api.models.User import User
 from api.models.messages import Messages

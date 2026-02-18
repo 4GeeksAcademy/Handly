@@ -29,5 +29,5 @@ class Messages(db.Model):
            
         }
 
-from api.models.user import User
+from api.models.User import User
 from api.models.chats import Chat

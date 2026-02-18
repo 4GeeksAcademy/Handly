@@ -1,4 +1,5 @@
 from api.database.db import db
+from api.models.Products import Products
 from sqlalchemy import String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
@@ -27,6 +28,9 @@ class User(db.Model):
     #relacion con tabla Messages 
     sent_messages: Mapped[list["Messages"]] = relationship("Messages",back_populates="sender")
 
+
+
+    products: Mapped[list["Products"]] = relationship("Products", back_populates="author")   # relacionar el producto con el user
 
     def serialize(self):  # lo que devuelve el modelo cuando se utiliza
         return {
