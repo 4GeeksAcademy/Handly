@@ -44,6 +44,10 @@ def newUser():
         return jsonify("Debes especificar un apellido"), 400
     if 'email' not in body:
         return jsonify("Debes especificar un email"), 400
+    if 'address' not in body:
+        return jsonify("Debes especificar una direccion"), 400
+    if 'number' not in body:
+        return jsonify("Debes especificar un numero telefonico"), 400
     if 'password' not in body:
         return jsonify("Debes especificar una contraseña"), 400
 
@@ -51,21 +55,22 @@ def newUser():
         first_name=body["first_name"],
         last_name=body["last_name"],
         email=body["email"],
+        address=body["address"],
+        number=body["number"],
         password=password_encript.decode(),
         is_active=True
 
     )
 
     db.session.add(signUp)  # metodo para guardar los usuarios en la DB
-    # para cerrar los cambios (siempre que agregamos, editamos, eliminamos cosas)
-    db.session.commit()
+    db.session.commit()  # para cerrar los cambios (siempre que agregamos, editamos, eliminamos cosas)
 
-    return jsonify("todo bien"), 200
+    return jsonify("usuario creado exitosamente"), 200
 
 
 @api.route('/deleteUser/<int:id>', methods=['DELETE'])  # borrar usuario
 def deleteUser(id):
-    user = User.query.filter_by(id=id).first()
+    user = User.query.filter_by(id=id).first() #busca el primer ID que coincide, metodo mas antiguo
 
     if user is None:
         return jsonify("Usuario no existe"), 400
@@ -79,25 +84,19 @@ def deleteUser(id):
 @api.route('/editUser/<int:id>', methods=['PUT']) #editar usuario
 def editUser(id):
     body = request.get_json()
-    '''bytes = body["password"].encode('utf-8')
-    salt = bcrypt.gensalt()
-    password_encript = bcrypt.hashpw(bytes, salt)'''
-
-    user = User.query.filter_by(id=id).first()
-
-    editarUsuario = User (
-        first_name=body["first_name"],
-        last_name=body["last_name"],
-        email=body["email"],
-        #password=password_encript.decode(),
-    )
-
+    user = db.session.get(User, id) #busca usuario e ID
+    
     if user is None:
         return jsonify("Usuario no existe"), 400
     
-    #db.session.add(editarUsuario)
+    
+    user.first_name = body["first_name"]
+    user.last_name = body["last_name"]
+    user.email = body["email"]
+
+    
     db.session.commit()
     
     return jsonify("Usuario editado con exito"), 200
-
+    
 
