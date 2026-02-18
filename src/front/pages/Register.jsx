@@ -9,7 +9,8 @@ export const RegisterPage = () => {
 
         <>
         <h1>REGISTER PAGE</h1>
-
+ 
+ 
         <RegisterForm/>
         </>
 
