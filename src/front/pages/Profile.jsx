@@ -1,3 +1,4 @@
+import Map from "../components/Map";
 import "./profile.css";
 
 
@@ -19,13 +20,13 @@ export function Profile() {
                     <div className="d-flex gap-3">
                         <div className="mb-3 w-50 bg-white  p-4 border border-2 shadow-sm rounded-4 border-start">
                             <span className="icon-box"><svg width="30px" height="30px" viewBox="-2.4 -2.4 28.80 28.80" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-2.4" y="-2.4" width="28.80" height="28.80" rx="5.76" fill="#c9f0fd" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 1C8.96243 1 6.5 3.46243 6.5 6.5C6.5 9.53757 8.96243 12 12 12C15.0376 12 17.5 9.53757 17.5 6.5C17.5 3.46243 15.0376 1 12 1Z" fill="#a2e0fb"></path> <path d="M7 14C4.23858 14 2 16.2386 2 19V22C2 22.5523 2.44772 23 3 23H21C21.5523 23 22 22.5523 22 22V19C22 16.2386 19.7614 14 17 14H7Z" fill="#a2e0fb"></path> </g></svg></span>
-                            <label for="name" className="form-label fw-bold ">Nombre</label>
+                            <label for="name" className="form-label fw-semibold ">Nombre</label>
                             <input type="text" className="form-control   border-3 " id="name" aria-describedby="emailHelp" />
                         </div>
 
                         <div className="mb-3 w-50 bg-white  p-4 border shadow-sm rounded-4">
                             <span><svg width="30px" height="30px" viewBox="-2.4 -2.4 28.80 28.80" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-2.4" y="-2.4" width="28.80" height="28.80" rx="5.76" fill="#c9f0fd" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 1C8.96243 1 6.5 3.46243 6.5 6.5C6.5 9.53757 8.96243 12 12 12C15.0376 12 17.5 9.53757 17.5 6.5C17.5 3.46243 15.0376 1 12 1Z" fill="#a2e0fb"></path> <path d="M7 14C4.23858 14 2 16.2386 2 19V22C2 22.5523 2.44772 23 3 23H21C21.5523 23 22 22.5523 22 22V19C22 16.2386 19.7614 14 17 14H7Z" fill="#a2e0fb"></path> </g></svg></span>
-                            <label for="firstName" className="form-label  fw-bold ">Apellido</label>
+                            <label for="firstName" className="form-label  fw-semibold ">Apellido</label>
                             <input type="text" className="form-control border-3" id="firstName" />
                         </div>
                     </div>
@@ -33,12 +34,12 @@ export function Profile() {
                     <div className="d-flex gap-3">
                         <div className="mb-3 w-50 bg-white  p-4 border shadow-sm rounded-4">
                             <span><svg width="30px" height="30px" viewBox="-3.2 -3.2 38.40 38.40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#d52a2a" stroke="#d52a2a" transform="matrix(-1, 0, 0, 1, 0, 0)"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-3.2" y="-3.2" width="38.40" height="38.40" rx="7.68" fill="#c9f0fd" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>mail</title> <desc>Created with Sketch Beta.</desc> <defs> </defs> <g id="Page-1" stroke-width="0.00032" fill="none" fill-rule="evenodd" sketch:type="MSPage"> <g id="Icon-Set-Filled" sketch:type="MSLayerGroup" transform="translate(-414.000000, -261.000000)" fill="#a2e0fb"> <path d="M430,275.916 L426.684,273.167 L415.115,285.01 L444.591,285.01 L433.235,273.147 L430,275.916 L430,275.916 Z M434.89,271.89 L445.892,283.329 C445.955,283.107 446,282.877 446,282.634 L446,262.862 L434.89,271.89 L434.89,271.89 Z M414,262.816 L414,282.634 C414,282.877 414.045,283.107 414.108,283.329 L425.147,271.927 L414,262.816 L414,262.816 Z M445,261 L415,261 L430,273.019 L445,261 L445,261 Z" id="mail" sketch:type="MSShapeGroup"> </path> </g> </g> </g></svg></span>
-                            <label for="email" className="form-label fw-bold">Correo Electronico</label>
+                            <label for="email" className="form-label fw-semibold">Correo Electronico</label>
                             <input type="email" className="form-control border-3" id="email" />
                         </div>
                         <div className="mb-3 w-50 bg-white  p-4 border shadow-sm rounded-4">
                             <span><svg width="30px" height="30px" viewBox="-1.6 -1.6 19.20 19.20" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-1.6" y="-1.6" width="19.20" height="19.20" rx="3.84" fill="#c9f0fd" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M1 5V1H7V5L4.5 7.5L8.5 11.5L11 9H15V15H11C5.47715 15 1 10.5228 1 5Z" fill="#a2e0fb"></path> </g></svg></span>
-                            <label for="telephone" className="form-label fw-bold">Telefono</label>
+                            <label for="telephone" className="form-label fw-semibold">Telefono</label>
                             <input type="number" className="form-control border-3" id="telephone" />
                         </div>
                     </div>
@@ -46,15 +47,15 @@ export function Profile() {
 
                 <div className="button-group p-4 d-flex gap-2">
                     {/* boton actualizar */}
-                    <button type="button" className="btn btn-info col-4 text-light fw-bold gap-2 btn-lg" data-bs-toggle="modal" data-bs-target="#modalActualizar">
+                    <button type="button" className="btn btn-info col-4 text-light fw-semibold gap-2 btn-lg" data-bs-toggle="modal" data-bs-target="#modalActualizar">
                         Actualizar Información
                     </button>
                     {/* boton de eliminar */}
-                    <button type="button" className="btn btn-danger col-4 text-light fw-bold btn-lg" data-bs-toggle="modal" data-bs-target="#modalEliminar">
+                    <button type="button" className="btn btn-danger col-4 text-light fw-semibold btn-lg" data-bs-toggle="modal" data-bs-target="#modalEliminar">
                         Eliminar Cuenta
                     </button>
                     {/* boton añadir producto */}
-                    <button type="button" className="btn btn-secondary col-4 text-light fw-bold btn-lg" data-bs-toggle="modal" data-bs-target="#modalAñadirProducto">
+                    <button type="button" className="btn btn-secondary col-4 text-light fw-semibold btn-lg" data-bs-toggle="modal" data-bs-target="#modalAñadirProducto">
                         Añadir Producto
                     </button>
                 </div>
@@ -74,30 +75,30 @@ export function Profile() {
                                 <p className='mb-0'>Modifica los campos que desees actualizar</p>
                             </div>
 
-                            <div className="modal-body ">
+                            <div className="modal-body  ">
                                 <form className="form">
                                     <div class="mb-4">
-                                        <div className=" col-12 col-md-12 bg-white  p-4 border border-2 shadow-sm rounded-4 border-start">
-                                            <span className="icon-box"><svg width="30px" height="30px" viewBox="-2.4 -2.4 28.80 28.80" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-2.4" y="-2.4" width="28.80" height="28.80" rx="5.76" fill="#c9f0fd" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 1C8.96243 1 6.5 3.46243 6.5 6.5C6.5 9.53757 8.96243 12 12 12C15.0376 12 17.5 9.53757 17.5 6.5C17.5 3.46243 15.0376 1 12 1Z" fill="#a2e0fb"></path> <path d="M7 14C4.23858 14 2 16.2386 2 19V22C2 22.5523 2.44772 23 3 23H21C21.5523 23 22 22.5523 22 22V19C22 16.2386 19.7614 14 17 14H7Z" fill="#a2e0fb"></path> </g></svg></span>
-                                            <label for="name" className="form-label fw-bold ">Nombre</label>
+                                        <div className=" col-12 col-md-12 bg-white  px-4 py-2  mb-4 fs-4">
+                                            <span><svg height="24px" width="24px" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">  <g> <path class="st0" d="M510.678,112.275c-2.308-11.626-7.463-22.265-14.662-31.054c-1.518-1.915-3.104-3.63-4.823-5.345 c-12.755-12.818-30.657-20.814-50.214-20.814H71.021c-19.557,0-37.395,7.996-50.21,20.814c-1.715,1.715-3.301,3.43-4.823,5.345 C8.785,90.009,3.63,100.649,1.386,112.275C0.464,116.762,0,121.399,0,126.087V385.92c0,9.968,2.114,19.55,5.884,28.203 c3.497,8.26,8.653,15.734,14.926,22.001c1.59,1.586,3.169,3.044,4.892,4.494c12.286,10.175,28.145,16.32,45.319,16.32h369.958 c17.18,0,33.108-6.145,45.323-16.384c1.718-1.386,3.305-2.844,4.891-4.43c6.27-6.267,11.425-13.741,14.994-22.001v-0.064 c3.769-8.653,5.812-18.171,5.812-28.138V126.087C512,121.399,511.543,116.762,510.678,112.275z M46.509,101.571 c6.345-6.338,14.866-10.175,24.512-10.175h369.958c9.646,0,18.242,3.837,24.512,10.175c1.122,1.129,2.179,2.387,3.112,3.637 L274.696,274.203c-5.348,4.687-11.954,7.002-18.696,7.002c-6.674,0-13.276-2.315-18.695-7.002L43.472,105.136 C44.33,103.886,45.387,102.7,46.509,101.571z M36.334,385.92V142.735L176.658,265.15L36.405,387.435 C36.334,386.971,36.334,386.449,36.334,385.92z M440.979,420.597H71.021c-6.281,0-12.158-1.651-17.174-4.552l147.978-128.959 l13.815,12.018c11.561,10.046,26.028,15.134,40.36,15.134c14.406,0,28.872-5.088,40.432-15.134l13.808-12.018l147.92,128.959 C453.137,418.946,447.26,420.597,440.979,420.597z M475.666,385.92c0,0.529,0,1.051-0.068,1.515L335.346,265.221L475.666,142.8 V385.92z"></path> </g> </g></svg></span>
+                                            <label for="name" className="fw-semibold">Nombre</label>
                                             <input type="text" className="form-control   border-3 " id="name" aria-describedby="emailHelp" />
                                         </div>
 
-                                        <div className="col-12 col-md-12 bg-white  p-4 border shadow-sm rounded-4">
+                                        <div className="col-12 col-md-12 bg-white  px-4 py-2  mb-4 fs-4">
                                             <span><svg width="30px" height="30px" viewBox="-2.4 -2.4 28.80 28.80" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-2.4" y="-2.4" width="28.80" height="28.80" rx="5.76" fill="#c9f0fd" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 1C8.96243 1 6.5 3.46243 6.5 6.5C6.5 9.53757 8.96243 12 12 12C15.0376 12 17.5 9.53757 17.5 6.5C17.5 3.46243 15.0376 1 12 1Z" fill="#a2e0fb"></path> <path d="M7 14C4.23858 14 2 16.2386 2 19V22C2 22.5523 2.44772 23 3 23H21C21.5523 23 22 22.5523 22 22V19C22 16.2386 19.7614 14 17 14H7Z" fill="#a2e0fb"></path> </g></svg></span>
-                                            <label for="firstName" className="form-label  fw-bold ">Apellido</label>
+                                            <label for="firstName" className="form-label  fw-semibold ">Apellido</label>
                                             <input type="text" className="form-control border-3" id="firstName" />
                                         </div>
 
-                                        <div className=" col-12 col-md-12 bg-white  p-4 border shadow-sm rounded-4">
+                                        <div className=" col-12 col-md-12 bg-white  px-4 py-2  mb-4 fs-4">
                                             <span><svg width="30px" height="30px" viewBox="-3.2 -3.2 38.40 38.40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#d52a2a" stroke="#d52a2a" transform="matrix(-1, 0, 0, 1, 0, 0)"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-3.2" y="-3.2" width="38.40" height="38.40" rx="7.68" fill="#c9f0fd" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>mail</title> <desc>Created with Sketch Beta.</desc> <defs> </defs> <g id="Page-1" stroke-width="0.00032" fill="none" fill-rule="evenodd" sketch:type="MSPage"> <g id="Icon-Set-Filled" sketch:type="MSLayerGroup" transform="translate(-414.000000, -261.000000)" fill="#a2e0fb"> <path d="M430,275.916 L426.684,273.167 L415.115,285.01 L444.591,285.01 L433.235,273.147 L430,275.916 L430,275.916 Z M434.89,271.89 L445.892,283.329 C445.955,283.107 446,282.877 446,282.634 L446,262.862 L434.89,271.89 L434.89,271.89 Z M414,262.816 L414,282.634 C414,282.877 414.045,283.107 414.108,283.329 L425.147,271.927 L414,262.816 L414,262.816 Z M445,261 L415,261 L430,273.019 L445,261 L445,261 Z" id="mail" sketch:type="MSShapeGroup"> </path> </g> </g> </g></svg></span>
-                                            <label for="email" className="form-label fw-bold">Correo Electronico</label>
+                                            <label for="email" className="form-label fw-semibold">Correo Electronico</label>
                                             <input type="email" className="form-control border-3" id="email" />
                                         </div>
 
-                                        <div className=" col-12 col-md-12 bg-white  p-4 border shadow-sm rounded-4">
+                                        <div className=" col-12 col-md-12 bg-white  px-4 py-2  mb-4 fs-4">
                                             <span><svg width="30px" height="30px" viewBox="-1.6 -1.6 19.20 19.20" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-1.6" y="-1.6" width="19.20" height="19.20" rx="3.84" fill="#c9f0fd" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M1 5V1H7V5L4.5 7.5L8.5 11.5L11 9H15V15H11C5.47715 15 1 10.5228 1 5Z" fill="#a2e0fb"></path> </g></svg></span>
-                                            <label for="telephone" className="form-label fw-bold">Telefono</label>
+                                            <label for="telephone" className="form-label fw-semibold">Telefono</label>
                                             <input type="number" className="form-control border-3" id="telephone" />
                                         </div>
 
@@ -167,25 +168,30 @@ export function Profile() {
                             <div className="modal-body ">
                                 <form className="form">
                                     <div className="mb-4">
-                                        <div className=" col-12 col-md-12 bg-white  p-4 border border-2 shadow-sm rounded-4 border-start">
-                                            <label for="title" className="form-label fw-bold ">Titulo</label>
+                                        <div className=" col-12 col-md-12 bg-white   px-4 py-2  mb-4 fs-4">
+                                            <label for="title" className="form-label fw-semibold ">Titulo</label>
                                             <input type="text" className="form-control   border-3 " id="title" aria-describedby="emailHelp" />
                                         </div>
 
-                                        <div className="col-12 col-md-12 bg-white  p-4 border shadow-sm rounded-4">
-                                            <label for="description" className="form-label  fw-bold ">Descripción</label>
+                                        <div className="col-12 col-md-12 bg-white   px-4 py-2  mb-4 fs-4">
+                                            <label for="description" className="form-label  fw-semibold ">Descripción</label>
                                             <input type="text" className="form-control border-3" id="description" />
                                         </div>
 
-                                        <div className=" col-12 col-md-12 bg-white  p-4 border shadow-sm rounded-4">
-                                            <label for="price" className="form-label fw-bold">Precio</label>
+                                        <div className=" col-12 col-md-12 bg-white   px-4 py-2  mb-4 fs-4">
+                                            <label for="price" className="form-label fw-semibold">Precio</label>
                                             <input type="number" className="form-control border-3" id="price" />
                                         </div>
 
-                                        <div className=" col-12 col-md-12 bg-white  p-4 border shadow-sm rounded-4">
-                                            <label for="upload-image" className="form-label fw-bold">Subir imagen</label>
+                                        <div className=" col-12 col-md-12 bg-white  px-4 py-2  mb-4 fs-4">
+                                            <label for="upload-image" className="form-label fw-semibold">Subir imagen</label>
                                             <input type="file" className="form-control border-3" id="upload-image" />
                                         </div>
+
+                                         <div className=" col-12 col-md-12 bg-white  p-4 ">
+                                              <Map/>                                   
+                                        </div>
+
                                     </div>
                                 </form>
                             </div>
