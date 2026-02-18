@@ -15,6 +15,8 @@ import { Dashboard } from "./pages/Dashboard.jsx";
 import { Recover_password } from "./pages/Recover_password";
 import { Change_password } from "./pages/Change_password";
 import { Profile } from "./pages/Profile";
+import { CategoryPage } from "./pages/CategoryPage";
+
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -29,8 +31,8 @@ export const router = createBrowserRouter(
 
 
         {/* Nested Routes: Defines sub-routes within the BaseHome component. */}
-        <Route path= "/" element={<Home />} />
-        <Route path="/single/:theId" element={ <Single />} />  {/* Dynamic route for single items */}
+        <Route index element={<Home />} />
+        <Route path="/single/:theId" element={ <Single />} />  
         <Route path="/demo" element={<Demo />} />
 
         <Route path="/register" element={<RegisterPage />} />
@@ -39,6 +41,9 @@ export const router = createBrowserRouter(
         <Route path="/recover_password" element={<Recover_password />} />
         <Route path="/change_password" element={<Change_password />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="category/:categoryName" element={<CategoryPage />} />
+
+
 
 
         
