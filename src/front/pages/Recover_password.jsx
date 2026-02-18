@@ -1,9 +1,6 @@
 import { Link } from "react-router-dom"
-import logo from "../assets/img/logo.png"
 
 export function Recover_password() {
-
-
 
     return (
         <div className="container d-flex justify-content-center flex-column mt-4">
@@ -18,17 +15,17 @@ export function Recover_password() {
                 <form>
                     <div className="mb-3">
                         <label for="currentPassword" className="form-label">Contraseña Actual</label>
-                        <input type="password" className="form-control" id="currentPassword" aria-describedby="emailHelp" placeholder="Ingresa tu contraseña actual"/>
+                        <input type="password" className="form-control" id="currentPassword" aria-describedby="emailHelp" placeholder="Ingresa tu contraseña actual" />
                     </div>
                     <div className="mb-3">
                         <label for="newPassword" className="form-label">Nueva Contreseña</label>
-                        <input type="password" className="form-control" id="newPassword" placeholder="Ingresa tu nueva contraseña"/>
+                        <input type="password" className="form-control" id="newPassword" placeholder="Ingresa tu nueva contraseña" />
                     </div>
                     <div className="mb-3">
                         <label for="confirmPassword" className="form-label">Confirmar Nueva Contreseña</label>
-                        <input type="password" className="form-control" id="confirmPassword" placeholder="Confirmar tu nueva contraseña"/>
+                        <input type="password" className="form-control" id="confirmPassword" placeholder="Confirmar tu nueva contraseña" />
                     </div>
-                    
+
                     <button type="submit" className="btn btn-primary w-100 mb-4">Confirmar Contraseña</button>
                     <Link className="text-center text-secondary text-decoration-none" href="/ " ><p>Cancelar</p></Link>
                 </form>
