@@ -1,8 +1,8 @@
 from api.database.db import db
-from sqlalchemy import String, Boolean, DateTime
+from sqlalchemy import String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from api.models.chats import Chat
-from api.models.messages import Messages
+from datetime import datetime, timezone
+
 
 class User(db.Model):
     __tablename__ = "user"
@@ -15,22 +15,26 @@ class User(db.Model):
         String(120), unique=True, nullable=False)
     address: Mapped[str] = mapped_column(
         String(120), unique=True, nullable=False)
-    number: Mapped[int] = mapped_column(
+    number: Mapped[str] = mapped_column(
         String(9), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
-    is_seller: Mapped[bool] = mapped_column(Boolean(), nullable=False)
+    
     
     #relacion con tabla Chat
-    sent_chat: Mapped[list["Chat"]] = relationship(back_populates="sender") 
-    received_chats: Mapped[list["Chat"]] = relationship(back_populates="recipient")
+    sent_chats: Mapped[list["Chat"]] = relationship("Chat", foreign_keys="Chat.sender_id", back_populates="sender")  #foreign_keys: para decirle a la db a que usuario especifico nos referimos, esto pasa cuando hay 2 usuarios en la misma tabla
+    received_chats: Mapped[list["Chat"]] = relationship("Chat", foreign_keys="Chat.recipient_id",back_populates="recipient")
     #relacion con tabla Messages 
-    sent_messages: Mapped[list["Messages"]] = relationship(back_populates="sender")
+    sent_messages: Mapped[list["Messages"]] = relationship("Messages",back_populates="sender")
 
 
     def serialize(self):  # lo que devuelve el modelo cuando se utiliza
         return {
             "id": self.id,
-            "sent_chat": self.User.sent_chat,
+            "first_name": self.first_name,
             # do not serialize the password, its a security breach
         }
+
+
+from api.models.chats import Chat
+from api.models.messages import Messages
