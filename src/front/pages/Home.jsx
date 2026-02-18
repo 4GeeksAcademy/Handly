@@ -1,73 +1,54 @@
-import React, { useEffect } from "react"
-import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export const Home = () => {
 	const navigate = useNavigate();
 
 	return (
+		<div className="bordesbody">
 		<div className="login-container">
-			<div className="titulos">
-				<h1 className="titulo-proyecto">HealthSupport</h1>
-				<br />
-				<div className="home-description">
-					HealthSupport ayuda a los profesionales sanitarios a organizar <span className="highlight">casos clínicos</span>,
-					visualizar <span className="highlight">pacientes</span> y llevar un registro seguro de la <span className="highlight">información médica</span>.
+			<header className="header">
+				<img
+					className="header-bg"
+					src="https://img.freepik.com/foto-gratis/cliente-joven-vistiendo-ropa-amarilla-sosteniendo-telefono_23-2148674273.jpg?semt=ais_hybrid&w=740&q=80"
+					alt="Médico atendiendo pacientes"
+				/>
+				<div className="header-content">
+
+						<h1 className="logo1">Handly</h1>
+					<p className="home-description">
+						Compra y vende productos
+					</p>
+				</div>
+			</header>
+			<main className="main-content">
+				<h1>Compra y vende cerca de ti</h1>
+				<p>Gana dinero con lo que no usas. Encuentra oportunidades en tu ciudad.</p>
+
+				<div className="info-box">
+					<ul className="landing-list">
+						<li>📸 Publica productos en segundos</li>
+						<li>💬 Contacta directamente con compradores</li>
+						<li>💸 Vende sin complicaciones</li>
+					</ul>
 				</div>
 
+				<div className="buttons-container">
 
-				<div className="features">
-					<div className="feature-card">
-						<i className="fas fa-user-injured fa-2x"></i>
-						<p>Gestión de pacientes</p>
-						<div className="feature-info">
-							Permite agregar, editar y visualizar la información de los pacientes de forma rápida y segura.
-						</div>
-					</div>
-
-					<div className="feature-card">
-						<i className="fas fa-notes-medical fa-2x"></i>
-						<p>Registro de casos clínicos</p>
-						<div className="feature-info">
-							Lleva un seguimiento detallado de cada caso clínico, incluyendo síntomas, diagnósticos y evolución.
-						</div>
-					</div>
-
-					<div className="feature-card">
-						<i className="fas fa-chart-bar fa-2x"></i>
-						<p>Métricas y estadísticas</p>
-						<div className="feature-info">
-							Visualiza datos clave de los pacientes y casos para mejorar la toma de decisiones.
-						</div>
-					</div>
+					<Link to="/register">
+						<button>
+							Empieza ahora
+						</button>
+					</Link>
+					<Link to="/login">
+						<button>
+							Inicia sesión
+						</button>
+					</Link>
+					
 				</div>
-
-
-
-
-				<div className="cta-buttons">
-					<button
-						className="btn btn-primary">Ingresar</button>
-					<br />
-					<br />
-					<button
-						className="btn btn-primary">Crear Usuario</button>
-					<br />
-					<br />
-
-					<button
-						className="btn btn-primary"
-						onClick={() => navigate("/dashboard")}>Dashboard</button>
-				</div>
-
-			</div>
-
-
-
-
-
+			</main>
+		</div>
 		</div>
 	);
-
-
-}; 
+};
