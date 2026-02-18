@@ -26,8 +26,8 @@ export const LoginPage = () => {
                         })
                         return
                 }
-
-                localStorage.setItem("token", data.access_token) //Guardamos el token en el localStorage
+ 
+                localStorage.setItem("token", data.access_token) //Guardamos el token en el localStorage que devuelve el backend
 
 
                 dispatch({                      // Actualizamos el estado global con la información del usuario
@@ -38,7 +38,7 @@ export const LoginPage = () => {
         }
         return (
                 <>
-                        <h1>Hello desde loginPage</h1>
+                       
                         <LoginForm
                                 onSubmit={handleLogin}
                                 error={store.error}

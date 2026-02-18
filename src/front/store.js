@@ -4,7 +4,7 @@ export const initialStore = () => {
   return {
     user: null,
     isAuthenticated: false,
-    token: localStorage.getItem("token") || null,
+    token: localStorage.getItem("token") || null, // Si hay un token en el localStorage, lo cargamos al estado inicial
     error: null,
     message: null
   }

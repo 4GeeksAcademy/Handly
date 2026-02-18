@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import useGlobalReducer from "../hooks/useGlobalReducer"
 import "./RegisterForm.css";
 
-export const RegisterForm = () => {
+export const RegisterForm = ({ onSubmit, error, loading }) => {
     const { store, dispatch } = useGlobalReducer()
 
     const [registerData, setRegisterData] = useState({
@@ -11,7 +11,6 @@ export const RegisterForm = () => {
         email: "",
         password: "",
         confirmPassword: "",
-        role: "doctor",
     })
 
     const handleChange = (e) => {
@@ -33,6 +32,9 @@ export const RegisterForm = () => {
             type: "set_loading",
             payload: true
         })
+
+            onSubmit(registerData)
+            
         // lógica para enviar al backend
     }
 
@@ -46,14 +48,26 @@ export const RegisterForm = () => {
                 )}
 
                 <form className="register-form" onSubmit={handleSubmit}>
-                    <label className="register-label">Nombre Completo</label>
+                    <label className="register-label">Nombre</label>
                     <input
                         type="text"
                         className="register-input"
-                        name="fullName"
-                        value={registerData.fullName}
+                        name="firstName"
+                        value={registerData.firstName}
                         onChange={handleChange}
                         required
+                        autoComplete="new-password"
+                    />
+
+                     <label className="register-label">Apellido</label>
+                    <input
+                        type="text"
+                        className="register-input"
+                        name="lastName"
+                        value={registerData.lastName}
+                        onChange={handleChange}
+                        required
+                        autoComplete="new-password"
                     />
 
                     <label className="register-label">Correo Electrónico</label>
@@ -64,6 +78,7 @@ export const RegisterForm = () => {
                         value={registerData.email}
                         onChange={handleChange}
                         required
+                        autoComplete="new-password"
                     />
 
                     <div className="register-row">
@@ -77,6 +92,7 @@ export const RegisterForm = () => {
                                 onChange={handleChange}
                                 required
                                 minLength="8"
+                                autoComplete="new-password"
                             />
                         </div>
 
@@ -90,6 +106,7 @@ export const RegisterForm = () => {
                                 onChange={handleChange}
                                 required
                                 minLength="8"
+                                autoComplete="new-password"
                             />
                         </div>
                     </div>
@@ -107,13 +124,13 @@ export const RegisterForm = () => {
                     </div>
 
                     <button type="submit" className="register-btn">
-                        {store.loading ? "Registrando..." : "Crear Cuenta"}
+                        Crear Cuenta
                     </button>
                 </form>
 
                 <div className="register-footer">
                     <small>
-                        ¿Ya tienes cuenta? <Link to={"/single/"} className="register-link">Inicia sesión</Link>
+                        ¿Ya tienes cuenta? <Link to={"/login/"} className="register-link">Inicia sesión</Link>
                     </small>
                 </div>
             </div>
