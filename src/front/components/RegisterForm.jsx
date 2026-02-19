@@ -3,8 +3,9 @@ import { Link } from "react-router-dom"
 import useGlobalReducer from "../hooks/useGlobalReducer"
 import "./RegisterForm.css";
 
-export const RegisterForm = ({ onSubmit, error, loading }) => {
+export const RegisterForm = ({ onSubmit, error, loading, setView }) => {
     const { store, dispatch } = useGlobalReducer()
+
 
     const [registerData, setRegisterData] = useState({
         fullName: "",
@@ -23,6 +24,7 @@ export const RegisterForm = ({ onSubmit, error, loading }) => {
     const handleSubmit = (e) => {
         e.preventDefault()
 
+
         if (registerData.password !== registerData.confirmPassword) {
             alert("Las contraseñas no coinciden")
             return
@@ -33,8 +35,8 @@ export const RegisterForm = ({ onSubmit, error, loading }) => {
             payload: true
         })
 
-            onSubmit(registerData)
-            
+        onSubmit(registerData)
+
         // lógica para enviar al backend
     }
 
@@ -59,7 +61,7 @@ export const RegisterForm = ({ onSubmit, error, loading }) => {
                         autoComplete="new-password"
                     />
 
-                     <label className="register-label">Apellido</label>
+                    <label className="register-label">Apellido</label>
                     <input
                         type="text"
                         className="register-input"
@@ -130,7 +132,10 @@ export const RegisterForm = ({ onSubmit, error, loading }) => {
 
                 <div className="register-footer">
                     <small>
-                        ¿Ya tienes cuenta? <Link to={"/login/"} className="register-link">Inicia sesión</Link>
+                        ¿Ya tienes cuenta?
+                        <span onClick={() => setView("login")} className="login-link">
+                            Iniciar Sesion!
+                        </span>
                     </small>
                 </div>
             </div>
