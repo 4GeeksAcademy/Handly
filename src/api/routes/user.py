@@ -23,7 +23,7 @@ def logIn():
         # convertir info del usuario que viene de la DB en un diccionario
         user_serialize = user.serialize()
         access_token = create_access_token(identity=str(user_serialize["id"]))
-        return jsonify({"msg": "Sign in completo", "access_token": access_token}), 200
+        return jsonify({"msg": "Sesion iniciada correctamente", "access_token": access_token, "user": user_serialize}), 200
     else:
         # en caso que la contrasena sea incorrecta
         return jsonify({"msg": "Login Incorrecto"}), 404
@@ -58,14 +58,16 @@ def newUser():
     )
 
     db.session.add(signUp)  # metodo para guardar los usuarios en la DB
-    db.session.commit()  # para cerrar los cambios (siempre que agregamos, editamos, eliminamos cosas)
+    # para cerrar los cambios (siempre que agregamos, editamos, eliminamos cosas)
+    db.session.commit()
 
     return jsonify("usuario creado exitosamente"), 200
 
 
 @api.route('/deleteUser/<int:id>', methods=['DELETE'])  # borrar usuario
 def deleteUser(id):
-    user = User.query.filter_by(id=id).first() #busca el primer ID que coincide, metodo mas antiguo
+    # busca el primer ID que coincide, metodo mas antiguo
+    user = User.query.filter_by(id=id).first()
 
     if user is None:
         return jsonify("Usuario no existe"), 400
@@ -76,22 +78,18 @@ def deleteUser(id):
     return jsonify("Usuario borrado"), 200
 
 
-@api.route('/editUser/<int:id>', methods=['PUT']) #editar usuario
+@api.route('/editUser/<int:id>', methods=['PUT'])  # editar usuario
 def editUser(id):
     body = request.get_json()
-    user = db.session.get(User, id) #busca usuario e ID
-    
+    user = db.session.get(User, id)  # busca usuario e ID
+
     if user is None:
         return jsonify("Usuario no existe"), 400
-    
-    
+
     user.first_name = body["first_name"]
     user.last_name = body["last_name"]
     user.email = body["email"]
 
-    
     db.session.commit()
-    
-    return jsonify("Usuario editado con exito"), 200
-    
 
+    return jsonify("Usuario editado con exito"), 200

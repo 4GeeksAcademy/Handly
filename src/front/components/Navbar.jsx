@@ -49,6 +49,7 @@ export const Navbar = () => {
 				payload: false
 			})
 			toast("Registro exitoso")
+			setView("login")
 
 		} catch (error) {
 			dispatch({
@@ -67,6 +68,7 @@ export const Navbar = () => {
 			body: JSON.stringify({ email, password })
 		})
 		const data = await response.json()
+
 
 		if (!response.ok) {              // Si la respuesta no es exitosa, actualizamos el estado global con el mensaje de error
 			dispatch({
