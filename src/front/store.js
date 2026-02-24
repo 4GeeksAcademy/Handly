@@ -6,6 +6,8 @@ export const initialStore = () => {
     token: token,
     error: null,
     message: null,
+    categoryProducts: [],
+    categoryError: null,
   };
 };
 
@@ -43,6 +45,20 @@ export default function storeReducer(store, action = {}) {
         error: action.payload,
       };
 
+    case "SET_CATEGORY_PRODUCTS":
+      return {
+        ...store,
+        categoryProducts: action.payload,
+        categoryError: null,
+      };
+      
+    case "CATEGORY_ERROR":  
+      return {
+        ...store,
+        categoryProducts: [], // Limpiamos los productos de la categoría en caso de error
+        categoryError: action.payload,
+      };
+      
     default:
       return store;
   }
