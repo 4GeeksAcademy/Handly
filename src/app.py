@@ -10,6 +10,10 @@ from api.database.db import db
 from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_jwt_extended import JWTManager
+from flask_socketio import SocketIO
+
+
+
 
 from flask_cors import CORS
 
@@ -22,6 +26,7 @@ import api.routes.category as api_category
 
 
 app = Flask(__name__)
+socketio = SocketIO(app) #chat
 # Permite acceder a las rutas con o sin barra al final (ejemplo: /api/user/login y /api/user/login/ serán tratados como la misma ruta)
 app.url_map.strict_slashes = False
 # Habilitar CORS para todas las rutas y métodos HTTP
@@ -97,4 +102,12 @@ def serve_any_other_file(path):
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
-    app.run(host='0.0.0.0', port=PORT, debug=True, use_reloader=False) # use_reloader=False evita que se ejecute el código dos veces al iniciar el servidor
+    # use_reloader=False evita que se ejecute el código dos veces al iniciar el servidor
+    app.run(host='0.0.0.0', port=PORT, debug=True, use_reloader=False)
+
+import socket_config
+#chat
+if __name__ == '__main__':  # condicion, si app es el archivo que estoy ejecutando, se corre el socketio
+    socketio.run(app, debug=True)
+
+
