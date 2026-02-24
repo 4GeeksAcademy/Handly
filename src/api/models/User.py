@@ -15,9 +15,9 @@ class User(db.Model):
     email: Mapped[str] = mapped_column(
         String(120), unique=True, nullable=False)
     address: Mapped[str] = mapped_column(
-        String(120), unique=True, nullable=False)
+        String(120), unique=True, nullable=True)
     number: Mapped[str] = mapped_column(
-        String(9), unique=True, nullable=False)
+        String(9), unique=True, nullable=True)
     password: Mapped[str] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
     

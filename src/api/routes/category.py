@@ -13,9 +13,10 @@ api = Blueprint('api/categories', __name__)
 @api.route('/category/<string:category_name>', methods=['GET']) # Obtener productos por categoria
 def get_products_by_category(category_name):
     
-    products = Products.query.join(Category).filter(Category.name == category_name).order_by(Products.id.desc()).limit(20).all()
-
+    products = Products.query.join(Category).filter(Category.name.ilike(f"%{category_name}%")).order_by(Products.id.desc()).limit(20).all() # Obtener los productos de la categoria, ordenados por id descendente y limitados a 20 resultados
+    #ilike es para hacer una busqueda insensible a mayusculas y minusculas, el % es para hacer una busqueda parcial, es decir, si el usuario busca "elec" se le mostraran los productos que contengan "elec" en su categoria, como "electronica", "electrodomesticos", etc.
     return jsonify([product.serialize() for product in products]), 200
+
 
 @api.route('/create_category', methods=['POST']) # Crear categoria
 def create_category():
@@ -34,4 +35,4 @@ def create_category():
     db.session.add(new_category)
     db.session.commit()
 
-    return jsonify({"message": "Categoria creada correctamente", "id": new_category.id}), 201
+    return jsonify({"msg": "Categoria creada correctamente", "id": new_category.id}), 201

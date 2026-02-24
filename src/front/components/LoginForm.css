@@ -3,20 +3,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 80vh;
-  background-color: #f8f9fa;
-  padding: 20px;
+  border-radius: 15px;
 }
 
 /* Card del login */
 .login-card {
   background-color: #ffffff;
-  border: 2px solid rgb(224, 153, 21); /* mismo color que navbar */
   border-radius: 15px;
   padding: 30px;
   max-width: 420px;
   width: 100%;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
   gap: 15px;

@@ -45,10 +45,6 @@ def newUser():
         return jsonify("Debes especificar un apellido"), 400
     if 'email' not in body:
         return jsonify("Debes especificar un email"), 400
-    if 'address' not in body:
-        return jsonify("Debes especificar una direccion"), 400
-    if 'number' not in body:
-        return jsonify("Debes especificar un numero telefonico"), 400
     if 'password' not in body:
         return jsonify("Debes especificar una contraseña"), 400
 
@@ -56,8 +52,6 @@ def newUser():
         first_name=body["first_name"],
         last_name=body["last_name"],
         email=body["email"],
-        address=body["address"],
-        number=body["number"],
         password=password_encript.decode(),
         is_active=True
 
