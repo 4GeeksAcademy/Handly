@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Prueba chat</h1>
+    <ul id="messages"></ul>
+    <!-- mostramos los mensajes enviados entre usuarios-->
+    <input type="text" id="myMessage" />
+    <button type="button" id="send">Enviar</button>
+    <!-- libreria jquery-->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js"></script>
+    <!-- libreria socket-->
+    <script>
+      //emit envia el evento de mensaje
+
+      const socket = io();
+      socket.emit("send_message", "holi");
+      socket.on("send_message", function (message) {
+        $("#messages").append("<li>" + message + "</li>");
+      });
+      //al clickear send mostrar el mensaje
+      $("#send").on("click", function () {
+        socket.emit("send_message", $("#myMessage").val()); //envia
+        $("#myMessage").val(""); //limpia luego de enviar
+      });
+    </script>
+  </body>
+</html>
