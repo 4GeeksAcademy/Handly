@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom"
 import { LoginForm } from "../components/LoginForm"
 import useGlobalReducer from "../hooks/useGlobalReducer"
+import { Navbar } from "../components/Navbar"; 
+import { Footer } from "../components/Footer"
 
 
 export const LoginPage = () => {
@@ -38,12 +40,12 @@ export const LoginPage = () => {
         }
         return (
                 <>
-                        <h1>Hello desde loginPage</h1>
-                        <LoginForm
-                                onSubmit={handleLogin}
-                                error={store.error}
-                        />
-                </>
+            <Navbar />
+            <main>
+                <LoginForm onSubmit={handleLogin} error={store.error} />
+            </main>
+            <Footer />  
+        </>
         )
 }
 
