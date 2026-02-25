@@ -1,8 +1,21 @@
 import { element } from "prop-types";
 import Map from "../components/Map";
+import { useEffect } from "react";
 
 
 export function Profile() {
+
+     async function getUser(){
+        let response =  await fetch("https://jubilant-lamp-5vgvw4pv4rjf4967-3001.app.github.dev/api/user")
+        console.log(response);
+        
+        let user = await response.json()
+        console.log(user);
+        
+    }
+    useEffect(()=>{
+        getUser()
+    },[])
 
 
     async function putUser(element) {
@@ -13,7 +26,7 @@ export function Profile() {
             "address": element.address,
             "number" : element.number
         }
-        await fetch(`https://jubilant-lamp-5vgvw4pv4rjf4967.github.dev/editUser/${element.id}`, {
+        await fetch(`https://jubilant-lamp-5vgvw4pv4rjf4967-3001.app.github.dev/editUser/${element.id}`, {
             method: "PUT",
             body: JSON.stringify(user),
             headers: { "Content-type": "application/json" }
@@ -23,7 +36,7 @@ export function Profile() {
     }
 
         async function deleteUser(id) {
-		await fetch(`https://jubilant-lamp-5vgvw4pv4rjf4967.github.dev/deleteUser${id}`, {
+		await fetch(`https://jubilant-lamp-5vgvw4pv4rjf4967-3001.app.github.dev/deleteUser/${id}`, {
 			method: "DELETE", // Accion / Metodo usado
 		})
         
