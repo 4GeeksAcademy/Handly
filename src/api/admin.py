@@ -10,6 +10,8 @@ from api.models.Products import Products
 
 
 
+
+
 def setup_admin(app):
     app.secret_key = os.environ.get('FLASK_APP_KEY', 'sample key')
     admin = Admin(app, name='4Geeks Admin')
@@ -23,3 +25,4 @@ def setup_admin(app):
     admin.add_view(ModelView(User, db.session))
 
     admin.add_view(ModelView(Products, db.session))
+

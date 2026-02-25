@@ -10,8 +10,6 @@ import { Landing } from "./pages/Landing";
 import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
-import { RegisterPage } from "./pages/Register";
-import { LoginPage } from "./pages/Login";
 import { Recover_password } from "./pages/Recover_password";
 import { Change_password } from "./pages/Change_password";
 import { Profile } from "./pages/Profile";
@@ -36,10 +34,10 @@ export const router = createBrowserRouter(
         <Route index element={<Landing />} /> 
         <Route path="/home" element={<Home />} /> 
 
+        <Route index element={<Home />} />
         <Route path="/single/:theId" element={<Single />} />
         <Route path="/demo" element={<Demo />} />
 
-        <Route path="/register" element={<RegisterPage />} />
         <Route path="/recover_password" element={<Recover_password />} />
         <Route path="/change_password" element={<Change_password />} />
         <Route path="/profile" element={<Profile />} />
@@ -55,7 +53,10 @@ export const router = createBrowserRouter(
 
       </Route>
 
+<<<<<<< HEAD
       <Route path="/login" element={<LoginPage />} />
+=======
+>>>>>>> f3e17433d740a5cc0db02b288258767ec92da633
     </>
   )
 );

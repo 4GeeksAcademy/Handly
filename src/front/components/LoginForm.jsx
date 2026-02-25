@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import "./LoginForm.css";
 
 
-export const LoginForm = ({ onSubmit, error = null }) => {
+export const LoginForm = ({ onSubmit, error = null, setView }) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [errors, setErrors] = useState({})
@@ -76,9 +76,9 @@ export const LoginForm = ({ onSubmit, error = null }) => {
                 <div className="login-footer">
                     <small>
                         ¿No tienes cuenta?{" "}
-                        <Link to="/register" className="login-link">
+                        <span onClick={()=> setView("register")} className="login-link">
                             Únete!
-                        </Link>
+                        </span>
                     </small>
                 </div>
             </div>

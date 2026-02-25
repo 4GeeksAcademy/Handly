@@ -1,4 +1,3 @@
-print("-----------------Product blueprint cargado")
 
 from flask import Blueprint, request, jsonify
 from api.database.db import db
@@ -14,30 +13,28 @@ api = Blueprint('api/products', __name__)
 def new_product():
     body = request.get_json()
 
-    print("body", body )
-    print("category_id", body.get("category_id"))
-
     if body is None:
         return jsonify({"error": "Body vacío"}), 400
     if 'title' not in body:
         return jsonify({"error": "Debes especificar un título"}), 400
     if 'images' not in body:
-        return jsonify({"error": "Debes incluir al menosuna imagen"}), 400
+        return jsonify({"error": "Debes incluir al menos una imagen"}), 400
     if 'price' not in body:
         return jsonify({"error": "Debes especificar un precio"}), 400
     if 'category_id' not in body:
         return jsonify({"error": "Debes especificar una categoría"}), 400
+    category_id= int(body["category_id"] )
 
 
     new_product = Products(
-        user_id=int(body["user_id"]),  # usar g.user.id mejor??
+        user_id=int(body["g.user.id"]),  # usar g.user.id mejor??
         description=body["description"],
         location=body["location"],
         shipping=body.get("shipping", False),
         title=body["title"],
         images=body["images"],
         price=body["price"],
-        category_id=int(body["category_id"] )
+        category_id=category_id
 
 
     )

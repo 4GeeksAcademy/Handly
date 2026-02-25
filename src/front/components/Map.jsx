@@ -3,40 +3,57 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
 const containerStyle = {
     width: "100%",
-    height: "400px"
-}
+    height: "100%"
+};
+const mapOptions = {
+    disableDefaultUI: true,
+      gestureHandling: "greedy"
+
+
+};
 const initialPosition = {
     lat: 40.4168,
     lng: -3.7038
 }
+
 const Map = () => {
 
     const [position, setPosition] = useState(null);
+    const [center,setCenter] = useState(initialPosition)
+
     const handleMapClick = useCallback((event) => {
+
+        //obtiene la latitud
         const lat = event.latLng.lat();
+        //obtiene la longitud
         const lng = event.latLng.lng();
 
-        setPosition({ lat, lng });
+        const newPosition = {lat, lng};
+        //mueve el pin 
+        setPosition(newPosition);
+        //centra el mapa en el punto clickeado
+        setCenter(newPosition);                   
 
-        console.log("Lat:", lat);
-        console.log("Lng:", lng);
+    }, []);
+     return (
+        <div style={{ width: "100%", height: "100%" }}>
+            <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+                <GoogleMap
+                    mapContainerStyle={containerStyle}
+                    center={center}
+                    zoom={12}
+                    onClick={handleMapClick}
+                    options={mapOptions}
 
+                >
+                    {position && (
+                        <Marker position={position} />
+                    )}
+                </GoogleMap>
+            </LoadScript>
+        </div>
+    );
+};
 
-
-    }, [])
-
-    return (
-        <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-            <GoogleMap
-                mapContainerStyle={containerStyle}
-                center={initialPosition}
-                zoom={12}
-                onClick={handleMapClick}>
-
-                {position && <Marker position={position} />}
-            </GoogleMap>
-        </LoadScript>
-
-    )
-}
+   
 export default Map;
