@@ -31,8 +31,8 @@ export const router = createBrowserRouter(
 
 
         {/* Nested Routes: Defines sub-routes within the BaseHome component. */}
-        <Route index element={<Landing />} /> 
-        <Route path="/home" element={<Home />} /> 
+        <Route index element={<Landing />} />
+        <Route path="/home" element={<Home />} />
 
         <Route index element={<Home />} />
         <Route path="/single/:theId" element={<Single />} />
@@ -53,10 +53,7 @@ export const router = createBrowserRouter(
 
       </Route>
 
-<<<<<<< HEAD
-      <Route path="/login" element={<LoginPage />} />
-=======
->>>>>>> f3e17433d740a5cc0db02b288258767ec92da633
+
     </>
   )
 );
