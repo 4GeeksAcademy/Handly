@@ -1,46 +1,25 @@
-import { element } from "prop-types";
 import Map from "../components/Map";
-import { useEffect } from "react";
+import { useState,useEffect} from "react";
 
 
 export function Profile() {
-
-     async function getUser(){
-        let response =  await fetch("https://jubilant-lamp-5vgvw4pv4rjf4967-3001.app.github.dev/api/user")
-        console.log(response);
-        
-        let user = await response.json()
-        console.log(user);
-        
-    }
+    const [user,setUser] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    address: "",
+    number: ""
+    });
     useEffect(()=>{
-        getUser()
-    },[])
+        const storedUser = localStorage.getItem('user');
 
-
-    async function putUser(element) {
-        let user ={
-            "first_name":element.first_name,
-            "last_name": element.last_name,
-            "email": element.email,
-            "address": element.address,
-            "number" : element.number
+        if (storedUser){ 
+            const parsedUser =  JSON.parse(storedUser);
+            setUser(parsedUser)
         }
-        await fetch(`https://jubilant-lamp-5vgvw4pv4rjf4967-3001.app.github.dev/editUser/${element.id}`, {
-            method: "PUT",
-            body: JSON.stringify(user),
-            headers: { "Content-type": "application/json" }
-        })
-
-
-    }
-
-        async function deleteUser(id) {
-		await fetch(`https://jubilant-lamp-5vgvw4pv4rjf4967-3001.app.github.dev/deleteUser/${id}`, {
-			method: "DELETE", // Accion / Metodo usado
-		})
-        
-    }
+    },[])
+    console.log(user);
+    
 
    
     return (
@@ -60,7 +39,13 @@ export function Profile() {
                         <div className="mb-3 w-50 bg-white  p-4 border border-2 shadow-sm rounded-4 border-start">
                             <span className="icon-box"><svg width="30px" height="30px" viewBox="-2.4 -2.4 28.80 28.80" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-2.4" y="-2.4" width="28.80" height="28.80" rx="5.76" fill="#c9f0fd" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 1C8.96243 1 6.5 3.46243 6.5 6.5C6.5 9.53757 8.96243 12 12 12C15.0376 12 17.5 9.53757 17.5 6.5C17.5 3.46243 15.0376 1 12 1Z" fill="#a2e0fb"></path> <path d="M7 14C4.23858 14 2 16.2386 2 19V22C2 22.5523 2.44772 23 3 23H21C21.5523 23 22 22.5523 22 22V19C22 16.2386 19.7614 14 17 14H7Z" fill="#a2e0fb"></path> </g></svg></span>
                             <label for="name" className="form-label fw-semibold ">Nombre</label>
-                            <input type="text" className="form-control   border-3 " id="name" aria-describedby="emailHelp" />
+                            <input type="text" 
+                            className="form-control   
+                            border-3 " 
+                            id="name" 
+                            aria-describedby="emailHelp"
+                            value={user.first_name}
+                            onChange={(e)=>setUser({...user,first_name:e.target.value})} />
                         </div>
 
                         <div className="mb-3 w-50 bg-white  p-4 border shadow-sm rounded-4">
@@ -90,7 +75,7 @@ export function Profile() {
                      className="btn btn-info col-4 text-light fw-semibold gap-2 btn-lg"
                       data-bs-toggle="modal" 
                       data-bs-target="#modalActualizar"
-                      onClick={()=>putUser(e)}
+                    
                       >                      
                         Actualizar Información
                     </button>
@@ -99,7 +84,7 @@ export function Profile() {
                     className="btn btn-danger col-4 text-light fw-semibold btn-lg" 
                     data-bs-toggle="modal" 
                     data-bs-target="#modalEliminar"
-                    onClick={deleteUser}>
+                    >
                         Eliminar Cuenta
                     </button>
                     {/* boton añadir producto */}
