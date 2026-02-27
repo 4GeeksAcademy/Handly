@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useEffect } from "react";
 import styles from "./CategoryPage.module.css";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import { Product } from "../components/Product";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -91,53 +92,11 @@ export const CategoryPage = () => {
               const firstImage = images[0];
 
               return (
-                <div className={styles.card} key={product.id}>
-                  {/* Imagen */}
-                  {firstImage ? (
-                    <img
-                      className={styles.cardImg}
-                      src={firstImage}
-                      alt={product.title}
-                      onError={(e) => {
-                        e.target.style.display = "none";
-                        e.target.nextSibling.style.display = "flex";
-                      }}
-                    />
-                  ) : null}
-                  <div
-                    className={styles.cardPlaceholder}
-                    style={{ display: firstImage ? "none" : "flex" }}
-                  >
-                    {icon}
-                  </div>
-
-                  {/* Info */}
-                  <div className={styles.cardBody}>
-                    <h2 className={styles.cardTitle}>{product.title}</h2>
-                    <p className={styles.cardDesc}>{product.description}</p>
-
-                    <div className={styles.cardMeta}>
-                      
-                      {product.shipping && (
-                        <span className={styles.cardShipping}>
-                          ✓ Envío disponible
-                        </span>
-                      )}
-                    </div>
-
-                    <div className={styles.cardFooter}>
-                      <span className={styles.cardPrice}>
-                        $ {product.price}
-                      </span>
-                      <Link
-                        to={`/product/${product.id}`}
-                        className={styles.cardLink}
-                      >
-                        Ver detalle →
-                      </Link>
-                    </div>
-                  </div>
-                </div>
+                <Product 
+                product={product}
+                icon={icon}
+                firstImage={firstImage}
+                />
               );
             })}
           </div>

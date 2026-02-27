@@ -37,23 +37,24 @@ export function Profile() {
             "address": user.address,
             "number": user.number
         }
-        
+        try {
         const response = await fetch(`${backendUrl}/api/user/editUser/${user.id}`, {
             method: "PUT",
             body: JSON.stringify(updatedUser),
-            headers: { "Content-type": "application/json" }
+            headers: { "Content-type": "application/json" },
         });
-        if (response.ok) {
-            // cerrar modal
-            const modalEl = modalActualizarRef.current;
-            const modalBootstrap = Modal.getInstance(modalEl) || new Modal(modalEl);
-            modalBootstrap.hide();
+        if (response.ok) throw new Error("Error al actualizar usuario");
 
-            alert("Usuario actualizado correctamente");
-        } else {
-            alert("Error al actualizar usuario");
-        }
+      const modalEl = modalActualizarRef.current;
+      const modalBootstrap = Modal.getInstance(modalEl) || new Modal(modalEl);
+      modalBootstrap.hide();
+
+      alert("Usuario actualizado correctamente");
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo actualizar el usuario");
     }
+  }
 
 
 
