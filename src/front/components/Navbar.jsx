@@ -113,7 +113,7 @@ export const Navbar = () => {
 							<div className="dropdown">
 								<button className="dropbtn">Categorías ▾</button>
 								<div className="dropdown-content">
-									<Link to="/category/informatica" className="dropdown-item">Informática</Link>
+									<Link to="/category/electronica" className="dropdown-item">Electronica</Link>
 									<Link to="/category/deportes" className="dropdown-item">Deportes</Link>
 									<Link to="/category/cine" className="dropdown-item">Cine</Link>
 									<Link to="/category/libros" className="dropdown-item">Libros</Link>

@@ -56,7 +56,7 @@ export function Profile() {
     }
 
 
-}
+
 
 //     async function deleteUser(id) {
 // 	await fetch(`https://jubilant-lamp-5vgvw4pv4rjf4967-3001.app.github.dev/deleteUser/${id}`, {
