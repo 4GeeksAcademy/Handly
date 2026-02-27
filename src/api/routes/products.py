@@ -3,13 +3,9 @@ from flask import Blueprint, request, jsonify
 from api.database.db import db
 from api.models.Products import Products
 
-
-
-
 api = Blueprint('api/products', __name__)
 
-
-@api.route('/create', methods=['POST'])  # Crear nuevo producto admin
+@api.route('/create', methods=['POST']) # Crear nuevo producto admin
 def new_product():
     body = request.get_json()
 
@@ -21,25 +17,24 @@ def new_product():
         return jsonify({"error": "Debes incluir al menos una imagen"}), 400
     if 'price' not in body:
         return jsonify({"error": "Debes especificar un precio"}), 400
-    if 'category_id' not in body:
+    if 'category' not in body:
         return jsonify({"error": "Debes especificar una categoría"}), 400
-    category_id= int(body["category_id"] )
-
 
     new_product = Products(
-        user_id=int(body["g.user.id"]),  # usar g.user.id mejor??
-        description=body["description"],
-        location=body["location"],
-        shipping=body.get("shipping", False),
-        title=body["title"],
-        images=body["images"],
-        price=body["price"],
-        category_id=category_id
+    user_id=int(body["g.user.id"]), # usar g.user.id mejor??
+    description=body["description"],
+    location=body["location"],
+    shipping=body.get("shipping", False),
+    title=body["title"],
+    images=body["images"],
+    price=body["price"],
+    category=body["category"]
+
 
 
     )
 
-    db.session.add(new_product)  
+    db.session.add(new_product)
     db.session.commit()
 
     return jsonify({"message": "Creado correctamente", "id": new_product.id}), 200
@@ -111,3 +106,10 @@ def get_products():
 
     return jsonify([product.serialize() for product in products]), 200
 
+
+@api.route('/category', methods=['GET'])
+def get_category_products():
+    body = request.get_json()
+    products = Products.query.filter_by(category=body["category"]).all()
+
+    return jsonify([product.serialize() for product in products]), 200

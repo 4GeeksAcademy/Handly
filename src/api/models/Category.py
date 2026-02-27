@@ -10,9 +10,8 @@ class Category(db.Model):
 
     name: Mapped[str] = mapped_column(String(50), nullable=False) 
 
-    products: Mapped[list["Products"]] = relationship("Products", back_populates="category")   # relacionar el producto con la categoria
-
-def serialize(self):  
+    
+    def serialize(self):  
         return {
             "id": self.id,
             "name": self.name

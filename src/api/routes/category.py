@@ -36,3 +36,6 @@ def create_category():
     db.session.commit()
 
     return jsonify({"msg": "Categoria creada correctamente", "id": new_category.id}), 201
+
+
+
