@@ -95,21 +95,20 @@ def delete_product(product_id):
 
 
     db.session.delete(product)
-    db.session.commit() 
+    db.session.commit()  
 
     return jsonify({"message": "Producto eliminado correctamente"}), 200
 
 
-@api.route('/products', methods=['GET'])
+@api.route('/', methods=['GET'])
 def get_products():
     products = Products.query.order_by(Products.id.desc()).limit(20).all() # Traer como max 20 productos
 
     return jsonify([product.serialize() for product in products]), 200
 
 
-@api.route('/category', methods=['GET'])
-def get_category_products():
-    body = request.get_json()
-    products = Products.query.filter_by(category=body["category"]).all()
+@api.route('/category/<category>', methods=['GET'])
+def get_category_products(category):
+    products = Products.query.filter_by(category=category).all()
 
     return jsonify([product.serialize() for product in products]), 200
