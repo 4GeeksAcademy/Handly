@@ -31,14 +31,28 @@ export const CategoryPage = () => {
     getProductsByCategory();
   }, [categoryName]);
 
-  const getProductsByCategory = async () => {
-    try {
-      const response = await fetch(
-        `${BACKEND_URL}/api/products/category/${categoryName}`
-      );
-      const data = await response.json();
+    const getProductsByCategory = async () => {
 
-      if (!response.ok) {
+      try {
+
+        const response = await fetch(`${BACKEND_URL}/api/categories/category/${categoryName}`)
+        const data = await response.json()
+
+        if (!response.ok) {
+          dispatch({
+            type: "CATEGORY_ERROR",
+            payload: "Error al obtener los productos"
+          })
+          return
+        }
+        dispatch({
+          type: "SET_CATEGORY_PRODUCTS",
+          payload: data
+        })
+
+        console.log(data)
+
+      } catch (error) {
         dispatch({
           type: "CATEGORY_ERROR",
           payload: "Error al obtener los productos",
