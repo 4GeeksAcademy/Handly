@@ -1,6 +1,13 @@
+import { useState } from "react";
 import { Link } from "react-router-dom"
 
+
+
 export function Recover_password() {
+
+    const [email, setEmail] = useState("");
+
+    
 
     return (
         <div className="container d-flex justify-content-center flex-column mt-4">

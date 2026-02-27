@@ -4,6 +4,8 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 from api.models.User import User
 from api.database.db import db
 import bcrypt
+import secrets
+from datetime import datetime, timedelta
 
 
 api = Blueprint('api/user', __name__)
@@ -32,10 +34,7 @@ def logIn():
 @api.route('/sign-up', methods=['POST'])  # crear usuario nuevo
 def newUser():
     body = request.get_json()
-    # convierte contrasena en un formato bytes / encriptar contrasena
-    bytes = body["password"].encode('utf-8')
-    salt = bcrypt.gensalt()
-    password_encript = bcrypt.hashpw(bytes, salt)
+    
 
     if body is None:
         return jsonify("Campos vacios"), 400
@@ -48,6 +47,11 @@ def newUser():
     if 'password' not in body:
         return jsonify("Debes especificar una contraseña"), 400
 
+# convierte contrasena en un formato bytes / encriptar contrasena
+    bytes = body["password"].encode('utf-8')
+    salt = bcrypt.gensalt()
+    password_encript = bcrypt.hashpw(bytes, salt)
+    
     signUp = User(
         first_name=body["first_name"],
         last_name=body["last_name"],
@@ -93,3 +97,61 @@ def editUser(id):
     db.session.commit()
 
     return jsonify("Usuario editado con exito"), 200
+
+# endpint forgot password
+@api.route('/forgot-password', methods=["POST"])
+def forgot_password():
+    body = request.get_json()
+
+    if not body or 'email' not in body:
+        return jsonify({"msg": "Email es requerido"}), 400
+    
+    user = User.query.filter_by(email=body["email"]).first()
+
+    if not user:
+        return jsonify({"msg": "Si el email existe, recibirás un correo con instrucciones"}), 200
+    
+    token = secrets.token_urlsafe(32)  # Genera un token seguro de 32 caracteres
+    expiration = datetime.utcnow() + timedelta(minutes=15)  # El token expira en 15 minutos
+
+    # Guarda el token y su fecha de expiración en la base de datos
+    user.reset_token = token
+    user.reset_token_expiration = expiration
+
+    db.session.commit()
+
+    return jsonify({"msg": "Token generado correctamente", "reset_token": token}), 200 # Para pruebas, en producción no se debería enviar el token en la respuesta, sino por email
+
+@api.route('/reset-password', methods=["POST"])
+def reset_password():
+    
+        body = request.get_json()
+
+        if not body or 'token' not in body or 'new_password' not in body:
+            return jsonify({"msg": "Token y nueva contraseña son requeridos"}), 400
+
+        user = User.query.filter_by(reset_token=body["token"]).first()
+
+        if not user:
+            return jsonify({"msg": "Token inválido"}), 400
+        
+        # Verifica si el token ha expirado
+        if user.reset_token_expiration < datetime.utcnow():
+            return jsonify({"msg": "Token ha expirado"}), 400
+
+        # Hash de la nueva contraseña
+
+        password_bytes = body["new_password"].encode('utf-8')
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(password_bytes, salt)
+
+        user.password = hashed_password.decode()  # Actualiza la contraseña del usuario 
+
+        # Limpia el token y su fecha de expiración
+
+        user.reset_token = None
+        user.reset_token_expiration = None
+
+        db.session.commit()
+
+        return jsonify({"msg": "Contraseña restablecida correctamente"}), 200
