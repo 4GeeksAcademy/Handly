@@ -15,6 +15,8 @@ import { Change_password } from "./pages/Change_password";
 import { Profile } from "./pages/Profile";
 import { CategoryPage } from "./pages/CategoryPage";
 import ProductDetail from "./pages/ProductDetail";
+import { Message } from "./pages/Message";
+
 
 
 
@@ -44,6 +46,7 @@ export const router = createBrowserRouter(
         <Route path="/profile" element={<Profile />} />
         <Route path="category/:categoryName" element={<CategoryPage />} />
         <Route path="product/:id" element={<ProductDetail />} />
+        <Route path="message/" element={<Message/>} />
 
 
 
