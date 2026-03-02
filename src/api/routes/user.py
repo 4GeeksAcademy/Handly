@@ -98,7 +98,7 @@ def editUser(id):
 
     return jsonify("Usuario editado con exito"), 200
 
-# endpint forgot password
+# endpoint forgot password
 @api.route('/forgot-password', methods=["POST"])
 def forgot_password():
     body = request.get_json()
