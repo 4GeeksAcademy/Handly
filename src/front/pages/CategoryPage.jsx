@@ -38,6 +38,7 @@ export const CategoryPage = () => {
         `${BACKEND_URL}/api/products/category/${categoryName}`
       );
       const data = await response.json();
+      console.log(data)
 
       if (!response.ok) {
         dispatch({
@@ -92,10 +93,10 @@ export const CategoryPage = () => {
               const firstImage = images[0];
 
               return (
-                <Product 
-                product={product}
-                icon={icon}
-                firstImage={firstImage}
+                <Product
+                  product={product}
+                  icon={icon}
+                  firstImage={firstImage}
                 />
               );
             })}

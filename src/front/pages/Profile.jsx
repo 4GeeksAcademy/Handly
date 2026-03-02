@@ -24,7 +24,7 @@ export function Profile() {
         location: ""
     })
     const [productSuccess, setProductSuccess] = useState(false);
-
+    const [imageInput, setImageInput] = useState("");
 
     const modalActualizarRef = useRef(null);
 
@@ -43,7 +43,20 @@ export function Profile() {
             // getUserProducts(parsedUser.id) // aqui pedimos los productos 
         }
     }, [])
-    console.log(user);
+
+    function handleAddImage() {
+        const trimmed = imageInput.trim();
+        if (!trimmed) return;
+        setNewProduct(prev => ({ ...prev, images: [...prev.images, trimmed] }));
+        setImageInput("");
+    }
+
+    function handleRemoveImage(index) {
+        setNewProduct(prev => ({
+            ...prev,
+            images: prev.images.filter((_, i) => i !== index)
+        }));
+    }
 
     //funcion para actualizar usuario
     async function putUser(user) {
@@ -54,11 +67,10 @@ export function Profile() {
             "address": user.address,
             "number": user.number
         }
-        console.log(user.id)
 
         try {
             const response = await fetch(`${backendUrl}/api/user/editUser/${user.id}`, {
-             
+
 
                 method: "PUT",
                 body: JSON.stringify(updatedUser),
@@ -132,15 +144,16 @@ export function Profile() {
             console.error(error);
 
         }
-    }    //funcion crear producto
+    }
+
+    //funcion crear producto
     async function createProduct() {
         try {
-            //asignamos user_id desde localStorage (el id del usuario logueado)
             const storedUser = JSON.parse(localStorage.getItem("user"));
-            const productToSend = { ...newProduct, user_id: storedUser.id };
-            console.log("Enviando producto:", productToSend);
+            const productToSend = { ...newProduct, "g.user.id": storedUser.id };
 
-            const response = await fetch(`${backendUrl}/api/products/create`, {
+
+            const response = await fetch(`${backendUrl}api/products/create`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(productToSend)
@@ -156,27 +169,22 @@ export function Profile() {
             setProductSuccess(true)
 
             // ✅ Limpiar formulario
-            setNewProduct({
-                title: "",
-                category: "",
-                description: "",
-                images: [],
-                price: "",
-                location: ""
-            });
+            setNewProduct({ title: "", category: "", description: "", images: [], price: "", location: "" });
+            setImageInput("");
 
-            //  Cerrar modal
-            const modalEl = document.getElementById('modalAñadirProducto');
+            const modalEl = document.getElementById('modalActualizar');
             const modalInstance = Modal.getInstance(modalEl);
-            if (modalInstance) modalInstance.hide();
+            if (modalAñadirProducto) {
+                modalInstance.hide();
+                document.body.classList.remove('modal-open');
+                document.querySelector('.modal-backdrop')?.remove();
+            }
+
 
         } catch (error) {
             console.error("Error creando producto:", error);
         }
-
-
-
-    }  
+    }
 
     return (
 
@@ -442,17 +450,55 @@ export function Profile() {
 
                                         <div className="mb-3">
                                             <label htmlFor="images" className="form-label fw-semibold">
-                                                Subir imagenes
+                                                Imágenes
                                             </label>
-                                            <input
-                                                type="text"
-                                                className="form-control shadow-sm"
-                                                id="images"
-                                                placeholder="Pon URLs separadas por coma"
-                                                value={newProduct.images.join(", ")}
-                                                onChange={(e) => setNewProduct({ ...newProduct, images: e.target.value.split(",").map(img => img.trim()) })}
-                                            />
+                                            <div className="d-flex gap-2">
+                                                <input
+                                                    type="text"
+                                                    className="form-control shadow-sm"
+                                                    id="images"
+                                                    placeholder="Pega una URL de imagen"
+                                                    value={imageInput}
+                                                    onChange={(e) => setImageInput(e.target.value)}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === "Enter") {
+                                                            e.preventDefault();
+                                                            handleAddImage();
+                                                        }
+                                                    }}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-info text-white fw-bold px-3"
+                                                    onClick={handleAddImage}
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
 
+                                            {/* Previews */}
+                                            {newProduct.images.length > 0 && (
+                                                <div className="d-flex flex-wrap gap-2 mt-2">
+                                                    {newProduct.images.map((url, index) => (
+                                                        <div key={index} className="position-relative" style={{ width: "70px", height: "70px" }}>
+                                                            <img
+                                                                src={url}
+                                                                alt={`img-${index}`}
+                                                                className="rounded-3 border object-fit-cover w-100 h-100"
+                                                                style={{ objectFit: "cover" }}
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleRemoveImage(index)}
+                                                                className="position-absolute top-0 end-0 btn btn-danger rounded-circle d-flex align-items-center justify-content-center p-0"
+                                                                style={{ width: "20px", height: "20px", fontSize: "12px", transform: "translate(40%, -40%)" }}
+                                                            >
+                                                                ×
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div className="mb-3">
