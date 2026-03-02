@@ -17,6 +17,7 @@ class Messages(db.Model):
     chat: Mapped["Chat"] = relationship("Chat",back_populates="messages")
     #relacion Usuarios
     sender: Mapped["User"] = relationship("User",foreign_keys=[sender_id],back_populates="sent_messages")
+    #created_at: Mapped[datetime] = mapped_column(DateTime(), default=currentTime)
     
    #created_by: User.user.id ???
 
@@ -24,7 +25,10 @@ class Messages(db.Model):
         return {
             "message_id": self.id,
             "sender_id": self.sender_id,
-            "message": self.message
+            "message": self.message,
+            "chat_id": self.chat_id,
+            "created_at": self.created_at,
+            
     
            
         }
