@@ -10,8 +10,8 @@ import { Landing } from "./pages/Landing";
 import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
-import { Recover_password } from "./pages/Recover_password";
-import { Change_password } from "./pages/Change_password";
+import { RecoverPassword } from "./pages/RecoverPassword";
+import { ChangePassword } from "./pages/ChangePassword";
 import { Profile } from "./pages/Profile";
 import { CategoryPage } from "./pages/CategoryPage";
 import ProductDetail from "./pages/ProductDetail";
@@ -41,8 +41,8 @@ export const router = createBrowserRouter(
         <Route path="/single/:theId" element={<Single />} />
         <Route path="/demo" element={<Demo />} />
 
-        <Route path="/recover_password" element={<Recover_password />} />
-        <Route path="/change_password" element={<Change_password />} />
+        <Route path="/recoverPassword" element={<RecoverPassword />} />
+        <Route path="/changepassword" element={<ChangePassword />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="category/:categoryName" element={<CategoryPage />} />
         <Route path="product/:id" element={<ProductDetail />} />

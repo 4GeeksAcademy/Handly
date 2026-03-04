@@ -37,8 +37,8 @@ export const LoginForm = ({ onSubmit, error = null, setView }) => {
         }
 
         setErrors({})
-        
-        onSubmit({ email, password }) 
+
+        onSubmit({ email, password })
 
 
     }
@@ -76,9 +76,18 @@ export const LoginForm = ({ onSubmit, error = null, setView }) => {
                 <div className="login-footer">
                     <small>
                         ¿No tienes cuenta?{" "}
-                        <span onClick={()=> setView("register")} className="login-link">
+                        <span onClick={() => setView("register")} className="login-link">
                             Únete!
                         </span>
+                    </small>
+                </div>
+
+                <div className="login-footer">
+                    <small>
+                        <Link to={"/recoverPassword"} className="login-link">
+                            ¿Haz olvidado tu constraseña?
+
+                        </Link>
                     </small>
                 </div>
             </div>
