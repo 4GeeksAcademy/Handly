@@ -37,11 +37,12 @@ const sampleProduct = {
 
 export default function ProductDetail({
 
-     const{id} = useParams(),
 
-     const[product, setProduct] = useState(null)
-     
+
 }) {
+    const { id } = useParams();
+
+    const [product, setProduct] = useState(null);
     const [currentImage, setCurrentImage] = useState(0);
     const [liked, setLiked] = useState(false);
 
