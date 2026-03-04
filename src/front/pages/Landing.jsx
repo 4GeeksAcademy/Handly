@@ -34,20 +34,7 @@ export const Landing = () => {
 					</ul>
 				</div>
 
-				<div className="buttons-container">
-
-					<Link to="/register">
-						<button>
-							Empieza ahora
-						</button>
-					</Link>
-					<Link to="/login">
-						<button>
-							Inicia sesión
-						</button>
-					</Link>
-					
-				</div>
+				
 			</main>
 		</div>
 		</div>

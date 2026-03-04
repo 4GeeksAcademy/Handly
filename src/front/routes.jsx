@@ -14,6 +14,7 @@ import { Recover_password } from "./pages/Recover_password";
 import { Change_password } from "./pages/Change_password";
 import { Profile } from "./pages/Profile";
 import { CategoryPage } from "./pages/CategoryPage";
+import { ContactMe } from "./pages/ContactMe"
 
 
 
@@ -42,14 +43,7 @@ export const router = createBrowserRouter(
         <Route path="/change_password" element={<Change_password />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="category/:categoryName" element={<CategoryPage />} />
-
-
-
-
-
-
-
-
+        <Route path="contact" element={<ContactMe />} />
 
       </Route>
 

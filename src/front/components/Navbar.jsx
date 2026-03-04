@@ -119,6 +119,9 @@ export const Navbar = () => {
 							<button className="navbtn1" onClick={() => window.scrollTo(0, document.body.scrollHeight)}>
 								Más información
 							</button>
+								<button className="navbtn1" onClick={() => navigate("/contact")}>
+									Contacta con nosotros
+								</button>
 						</div>
 
 
@@ -127,8 +130,8 @@ export const Navbar = () => {
 			</nav>
 			<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
-				<div class="modal-dialog">
-					<div class="modal-content">
+				<div className="modal-dialog">
+					<div className="modal-content">
 						{
 							view === "login" ? (
 								<LoginForm
