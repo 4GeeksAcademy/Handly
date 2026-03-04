@@ -28,7 +28,6 @@ import api.routes.category as api_category
 app = Flask(__name__)
 mail = Mail()
 
-
 socketio = SocketIO(app)  # chat
 # Permite acceder a las rutas con o sin barra al final (ejemplo: /api/user/login y /api/user/login/ serán tratados como la misma ruta)
 app.url_map.strict_slashes = False
