@@ -2,10 +2,31 @@
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "./home.css";
+import { useEffect, useState } from "react"
+
 
 
 
 export function Home() {
+
+	const [products, setProducts] = useState([]);
+
+	async function getProducts() { //obtener productos
+		try {
+			let response = await fetch('https://didactic-space-couscous-x6xgp5p9jxgf9pq7-3001.app.github.dev/api/products/')
+			let data = await response.json()
+			setProducts(data)
+		}
+		catch (error) {
+			console.log(error)
+		}
+	}
+
+	useEffect(() => {
+		getProducts();
+	}, []);
+
+
 	return (
 
 		<div className="home-container">
@@ -77,126 +98,7 @@ export function Home() {
 							</div>
 						</div>
 
-						<div className="card">
-							<div className="card-image">
-								<span className="badge">Buen estado</span>
-								<img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8" alt="Macbook" />
-							</div>
-							<div className="card-content">
-								<h3>MacBook Pro 13</h3>
-								<p className="location">📍 Barcelona</p>
-								<div className="card-footer">
-									<span className="price">650€</span>
-									<button>Ver más</button>
-								</div>
-							</div>
-						</div>
 
-						<div className="card">
-							<div className="card-image">
-								<span className="badge">Vintage</span>
-								<img src="https://i.pinimg.com/736x/c9/93/26/c993260d8405ee7d5d6075d7359fc6a8.jpg" alt="Camara" />
-							</div>
-							<div className="card-content">
-								<h3>Cámara Analógica Vintage</h3>
-								<p className="location">📍 Valencia</p>
-								<div className="card-footer">
-									<span className="price">125€</span>
-									<button>Ver más</button>
-								</div>
-							</div>
-						</div>
-
-						<div className="card">
-							<div className="card-image">
-								<span className="badge">Como nuevo</span>
-								<img src="https://i.pinimg.com/736x/b5/38/a7/b538a7caf9a2da9309719f7d225c67e5.jpg" alt="Sofa" />
-							</div>
-							<div className="card-content">
-								<h3>Sofa de dos plazas</h3>
-								<p className="location">📍 Bilbao</p>
-								<div className="card-footer">
-									<span className="price">300€</span>
-									<button>Ver más</button>
-								</div>
-							</div>
-						</div>
-
-
-						<div className="card">
-							<div className="card-image">
-								<span className="badge">Buen estado</span>
-								<img src="https://i.pinimg.com/736x/08/9b/9a/089b9a425d9d21219a77399501ab34f6.jpg" alt="escritorio" />
-							</div>
-							<div className="card-content">
-								<h3>Escritorio</h3>
-								<p className="location">📍 Murcia</p>
-								<div className="card-footer">
-									<span className="price">60€</span>
-									<button>Ver más</button>
-								</div>
-							</div>
-						</div>
-
-						<div className="card">
-							<div className="card-image">
-								<span className="badge">Vintage</span>
-								<img src="https://i.pinimg.com/736x/0f/30/29/0f30295d19c12bac4cefa8b9f8576d07.jpg" alt="reloj" />
-							</div>
-							<div className="card-content">
-								<h3>Reloj Vintage Clasico</h3>
-								<p className="location">📍 Madrid</p>
-								<div className="card-footer">
-									<span className="price">89€</span>
-									<button>Ver más</button>
-								</div>
-							</div>
-						</div>
-
-						<div className="card">
-							<div className="card-image">
-								<span className="badge">Como nueva</span>
-								<img src="https://i.pinimg.com/1200x/06/59/3e/06593e5c7776cf4b93c584d359f1b7ba.jpg" alt="tablaWindsurf" />
-							</div>
-							<div className="card-content">
-								<h3>Tabla Windsurf 140litros F2</h3>
-								<p className="location">📍 Madrid</p>
-								<div className="card-footer">
-									<span className="price">100€</span>
-									<button>Ver más</button>
-								</div>
-							</div>
-						</div>
-
-						<div className="card">
-							<div className="card-image">
-								<span className="badge">Como nuevos</span>
-								<img src="https://i.pinimg.com/736x/53/aa/fb/53aafb407643282a909664f6d6ff8023.jpg" alt="Patines hielo" />
-							</div>
-							<div className="card-content">
-								<h3>Patines de hielo </h3>
-								<p className="location">📍 Elche</p>
-								<div className="card-footer">
-									<span className="price">200€</span>
-									<button>Ver más</button>
-								</div>
-							</div>
-						</div>
-
-						<div className="card">
-							<div className="card-image">
-								<span className="badge">Como nueva</span>
-								<img src="https://i.pinimg.com/736x/32/ec/d9/32ecd9d0177463a96943530e0446686e.jpg" alt="bicicleta" />
-							</div>
-							<div className="card-content">
-								<h3>Bicicleta de carretera</h3>
-								<p className="location">📍 Leon</p>
-								<div className="card-footer">
-									<span className="price">800€</span>
-									<button>Ver más</button>
-								</div>
-							</div>
-						</div>
 					</div>
 				</div>
 			</section>
