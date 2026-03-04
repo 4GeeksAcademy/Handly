@@ -424,14 +424,13 @@ export function Profile() {
                                                 onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
                                                 className="form-select form-select-lg shadow-sm">
                                                 <option value="">Selecciona una categoría</option>
-                                                <option value="informatica">Informática</option>
+                                                <option value="electronica">Electronica</option>
                                                 <option value="deportes">Deportes</option>
                                                 <option value="cine">Cine</option>
                                                 <option value="libros">Libros</option>
                                                 <option value="coleccionismo">Coleccionismo</option>
                                                 <option value="hogar">Hogar</option>
                                                 <option value="accesorios">Accesorios y Moda</option>
-                                                <option value="otros">Otros</option>
                                             </select>
                                         </div>
 
@@ -499,6 +498,7 @@ export function Profile() {
                                                     ))}
                                                 </div>
                                             )}
+
                                         </div>
 
                                         <div className="mb-3">

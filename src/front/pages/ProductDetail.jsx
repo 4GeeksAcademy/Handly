@@ -12,6 +12,7 @@ import {
     MessageCircle,
     Heart,
 } from "lucide-react";
+import { useParams } from "react-router-dom";
 
 const sampleProduct = {
     title: "Bolso Messenger de Cuero Vintage Premium",
@@ -33,8 +34,13 @@ const sampleProduct = {
     },
 };
 
+
 export default function ProductDetail({
 
+     const{id} = useParams(),
+
+     const[product, setProduct] = useState(null)
+     
 }) {
     const [currentImage, setCurrentImage] = useState(0);
     const [liked, setLiked] = useState(false);
