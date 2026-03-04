@@ -14,11 +14,12 @@ def index():
     return render_template("chattest.html")
 
 # evento de mensaje, cuando el servidor recibe un mensaje debe hacer algo
+
+
 @socketio.on('send_message')
 # .on cuando llega el evento, ejecuta la funcion
-def handleMessage(message): #necesito agregar los usuarios correctos a la interaccion de esta funcion
+# necesito agregar los usuarios correctos a la interaccion de esta funcion
+def handleMessage(message):
     print("Message: " + message)
     # mostrar los mensajes a todos los participantes de la conversacion
-    emit("send_message", message, broadcast=True) 
-
-
+    emit("send_message", message, broadcast=True)
