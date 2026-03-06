@@ -69,7 +69,7 @@ export function Profile() {
         }
 
         try {
-            const response = await fetch(`${backendUrl}/api/user/editUser/${user.id}`, {
+            const response = await fetch(`${backendUrl}api/user/editUser/${user.id}`, {
 
 
                 method: "PUT",

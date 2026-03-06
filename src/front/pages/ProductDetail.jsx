@@ -34,7 +34,8 @@ export default function ProductDetail() {
             
         }  
         getProduct() 
-    
+      console.log(product);
+      
     },[id])
      
     if (!product) return <p>Cargando...</p>
