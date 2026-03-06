@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import styles from "./ProductDetail.module.css";
 import {
     ArrowLeft,
@@ -13,47 +13,44 @@ import {
     Heart,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
-
-const sampleProduct = {
-    title: "Bolso Messenger de Cuero Vintage Premium",
-    description:
-        "Bolso messenger artesanal de cuero genuino con acabado vintage. Interior espacioso con compartimentos para laptop de hasta 15 pulgadas. Correa ajustable y herrajes de laton envejecido.",
-    price: 2450.0,
-    images: [
-        "https://i.pinimg.com/736x/a0/6e/30/a06e30aed4da0e318a74d1116b5198c2.jpg",
-        "https://images.unsplash.com/photo-1517336714731-489689fd1ca8",
-        "https://i.pinimg.com/736x/c9/93/26/c993260d8405ee7d5d6075d7359fc6a8.jpg",
-    ],
-    location: "Ciudad de Mexico, CDMX",
-    shipping: true,
-    author: {
-        name: "Maria Rodriguez",
-    },
-    category: {
-        name: "Accesorios",
-    },
-};
-
-
-export default function ProductDetail({
+const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 
 
-}) {
-    const { id } = useParams();
-
-    const [product, setProduct] = useState(null);
+export default function ProductDetail() {
+    const {id} = useParams();  //obtengo el id de la URL
+    const[product, setProduct] = useState(null) // guardo el productpo
     const [currentImage, setCurrentImage] = useState(0);
     const [liked, setLiked] = useState(false);
 
-    const images = sampleProduct.images;
+   
+    useEffect(()=>{
+        async function getProduct() {
+            const response = await fetch(`${backendUrl}api/products/get_product/${id}`)
+            const data = await response.json()
+            console.log("producto recibido:", data);
+            
+            setProduct(data)
+            
+        }  
+        getProduct() 
+    
+    },[id])
+     
+    if (!product) return <p>Cargando...</p>
+
+     const images = product.images
+        ? product.images.replace(/[{}]/g, "").split(",")
+        : [];
 
     const prevImage = () =>
         setCurrentImage((i) => (i === 0 ? images.length - 1 : i - 1));
     const nextImage = () =>
         setCurrentImage((i) => (i === images.length - 1 ? 0 : i + 1));
 
-    const authorInitial = sampleProduct.author.name.charAt(0).toUpperCase();
+    const authorInitial = String(product.user_id)
+
+
 
     return (
         <div className={styles.container}>
@@ -72,7 +69,7 @@ export default function ProductDetail({
                         <img
                             className={styles.mainImage}
                             src={images[currentImage]}
-                            alt={`${sampleProduct.title} - imagen ${currentImage + 1}`}
+                            alt={`${product.title} - imagen ${currentImage + 1}`}
                         />
                         {images.length > 1 && (
                             <>
@@ -108,7 +105,7 @@ export default function ProductDetail({
                                     <img
                                         className={styles.thumbnailImage}
                                         src={src}
-                                        alt={`${sampleProduct.title} miniatura ${i + 1}`}
+                                        alt={`${product.title} miniatura ${i + 1}`}
                                     />
                                 </button>
                             ))}
@@ -118,21 +115,21 @@ export default function ProductDetail({
 
                 {/* ── sampleProduct Info ── */}
                 <section className={styles.info}>
-                    <span className={styles.categoryBadge}>{sampleProduct.category.name}</span>
+                    <span className={styles.categoryBadge}>{product.category?.name ?? "Sin categoria"}</span>
 
-                    <h1 className={styles.title}>{sampleProduct.title}</h1>
+                    <h1 className={styles.title}>{product.title}</h1>
 
                     <p className={styles.price}>
                         <span className={styles.currency}>$</span>
-                        {sampleProduct.price.toLocaleString("es-MX", {
+                        {product.price.toLocaleString("es-MX", {
                             minimumFractionDigits: 2,
                         })}
                     </p>
 
                     <div className={styles.divider} />
 
-                    {sampleProduct.description && (
-                        <p className={styles.description}>{sampleProduct.description}</p>
+                    {product.description && (
+                        <p className={styles.description}>{product.description}</p>
                     )}
 
                     {/* Meta info */}
@@ -143,7 +140,7 @@ export default function ProductDetail({
                             </div>
                             <div className={styles.metaContent}>
                                 <span className={styles.metaLabel}>Ubicacion</span>
-                                <span className={styles.metaValue}>{sampleProduct.location}</span>
+                                <span className={styles.metaValue}>{product.location}</span>
                             </div>
                         </div>
 
@@ -154,7 +151,7 @@ export default function ProductDetail({
                             <div className={styles.metaContent}>
                                 <span className={styles.metaLabel}>Categoria</span>
                                 <span className={styles.metaValue}>
-                                    {sampleProduct.category.name}
+                                    {product.category?.name ?? "Sin categoría"}
                                 </span>
                             </div>
                         </div>
@@ -166,12 +163,12 @@ export default function ProductDetail({
                             <div className={styles.metaContent}>
                                 <span className={styles.metaLabel}>Envio</span>
                                 <span
-                                    className={`${styles.shippingBadge} ${sampleProduct.shipping
+                                    className={`${styles.shippingBadge} ${product.shipping
                                         ? styles.shippingAvailable
                                         : styles.shippingUnavailable
                                         }`}
                                 >
-                                    {sampleProduct.shipping
+                                    {product.shipping
                                         ? "Envio disponible"
                                         : "Solo retiro en persona"}
                                 </span>
@@ -184,16 +181,20 @@ export default function ProductDetail({
                         <div className={styles.authorAvatar}>{authorInitial}</div>
                         <div className={styles.authorInfo}>
                             <span className={styles.authorLabel}>Publicado por</span>
-                            <span className={styles.authorName}>{sampleProduct.author.name}</span>
+                            <span className={styles.authorName}>{`Usuario ${product.user_id}`}</span>
                         </div>
                     </div>
 
                     {/* Actions */}
                     <div className={styles.actions}>
-                        <button className={styles.btnPrimary} >
+                                        {product.seller_phone &&(
+                        <a href={`https://wa.me/${product.seller_phone}`}>
                             <MessageCircle size={18} />
-                            Contactar vendedor
-                        </button>
+                            Contactar por WhatsApp
+                            </a>
+                            )}
+                        
+
                         <button
                             className={styles.btnSecondary}
                             onClick={() => setLiked(!liked)}

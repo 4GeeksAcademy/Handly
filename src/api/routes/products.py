@@ -57,7 +57,8 @@ def get_product(product_id):
         "shipping": product.shipping,
         "title": product.title,
         "images": product.images,
-        "price": product.price
+        "price": product.price,
+         "seller_phone":product.author.number
     }), 200
 
 
