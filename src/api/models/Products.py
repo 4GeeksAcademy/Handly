@@ -32,4 +32,5 @@ class Products(db.Model):
             "location": self.location,
             "shipping": self.shipping,
             "category": self.category,
+            "seller_phone": self.author.number
             }

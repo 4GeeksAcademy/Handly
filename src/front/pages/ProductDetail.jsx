@@ -187,10 +187,14 @@ export default function ProductDetail() {
 
                     {/* Actions */}
                     <div className={styles.actions}>
-                        <button className={styles.btnPrimary} >
+                                        {product.seller_phone &&(
+                        <a href={`https://wa.me/${product.seller_phone}`}>
                             <MessageCircle size={18} />
-                            Contactar vendedor
-                        </button>
+                            Contactar por WhatsApp
+                            </a>
+                            )}
+                        
+
                         <button
                             className={styles.btnSecondary}
                             onClick={() => setLiked(!liked)}
