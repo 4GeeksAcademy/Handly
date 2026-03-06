@@ -100,6 +100,8 @@ def editUser(id):
     user.first_name = body["first_name"]
     user.last_name = body["last_name"]
     user.email = body["email"]
+    user.number = body["number"]
+
 
     db.session.commit()
 

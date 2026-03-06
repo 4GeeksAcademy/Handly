@@ -3,6 +3,29 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "./home.css";
 import { useEffect, useState } from "react"
+import { Product } from "../components/Product";
+import styles from "./CategoryPage.module.css";
+import useGlobalReducer from "../hooks/useGlobalReducer";
+
+const parseImages = (imagesStr) => {
+	if (!imagesStr) return [];
+	if (Array.isArray(imagesStr)) return imagesStr;
+	// Convierte el formato PostgreSQL {url1,url2} a array
+	return imagesStr.replace(/^\{|\}$/g, "").split(",").filter(Boolean);
+};
+
+const CATEGORY_ICONS = {
+	electronica: "⚡",
+	ropa: "👕",
+	hogar: "🏠",
+	deportes: "🏃",
+	libros: "📚",
+	juguetes: "🎮",
+	vehiculos: "🚗",
+	default: "🏷️",
+};
+
+
 
 
 
@@ -10,10 +33,12 @@ import { useEffect, useState } from "react"
 export function Home() {
 
 	const [products, setProducts] = useState([]);
+	const { store, dispatch } = useGlobalReducer();
+
 
 	async function getProducts() { //obtener productos
 		try {
-			let response = await fetch('https://didactic-space-couscous-x6xgp5p9jxgf9pq7-3001.app.github.dev/api/products/')
+			let response = await fetch('https://urban-zebra-5657rgr46gph47wj-3001.app.github.dev/api/products/')
 			let data = await response.json()
 			setProducts(data)
 		}
@@ -82,23 +107,32 @@ export function Home() {
 							<p>Descubre los artículos más populares de la semana</p>
 						</div>
 					</div>
-					<div className="cards">
-						<div className="card">
-							<div className="card-image">
-								<span className="badge">Como nuevo</span>
-								<img src="https://i.pinimg.com/736x/a0/6e/30/a06e30aed4da0e318a74d1116b5198c2.jpg" alt="mando" />
-							</div>
-							<div className="card-content">
-								<h3>Mando</h3>
-								<p className="location">📍Andalucia</p>
-								<div className="card-footer">
-									<span className="price">150€</span>
-									<button>Ver más</button>
-								</div>
-							</div>
-						</div>
+					<div className={styles.body}>
+						{products?.length > 0 ? (
+							<div className={styles.grid}>
+								{products.map((product) => {
+									const images = parseImages(product.images);
+									const firstImage = images[0];
+									const icon =
+										CATEGORY_ICONS[product.category.toLowerCase()] ?? CATEGORY_ICONS.default;
 
+									return (
+										<Product
+											product={product}
+											icon={icon}
+											firstImage={firstImage}
+										/>
 
+									);
+								})}
+							</div>
+						) : (
+							<div className={styles.empty}>
+								<div className={styles.emptyIcon}>🔍</div>
+								<h2>Sin productos por ahora</h2>
+
+							</div>
+						)}
 					</div>
 				</div>
 			</section>
