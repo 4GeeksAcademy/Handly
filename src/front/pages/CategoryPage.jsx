@@ -62,6 +62,7 @@ export const CategoryPage = () => {
 
   const capitalizedName =
     categoryName?.charAt(0).toUpperCase() + categoryName?.slice(1);
+    
 
   return (
     <div className={styles.root}>
