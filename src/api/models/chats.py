@@ -10,7 +10,6 @@ class Chat(db.Model): #datetime espera DateTime y el parametro -default, onupdat
     __tablename__ = "chat"
     id: Mapped[int] = mapped_column(primary_key=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(), default=currentTime)
-    updated_at: Mapped[datetime] = mapped_column(DateTime(), onupdate=currentTime)
     sender_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     recipient_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
 

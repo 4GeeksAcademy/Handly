@@ -22,6 +22,7 @@ import api.routes.user as api_user
 import api.routes.products as api_products
 
 import api.routes.category as api_category
+import api.routes.chat as api_chats
 
 
 app = Flask(__name__)
@@ -83,6 +84,7 @@ app.register_blueprint(api_products.api, url_prefix='/api/products')
 
 app.register_blueprint(api_category.api, url_prefix='/api/categories')
 
+app.register_blueprint(api_chats.api, url_prefix='/api/chat')
 
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)

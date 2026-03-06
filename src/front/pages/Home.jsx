@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { Product } from "../components/Product";
 import styles from "./CategoryPage.module.css";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 const parseImages = (imagesStr) => {
 	if (!imagesStr) return [];
@@ -38,7 +39,7 @@ export function Home() {
 
 	async function getProducts() { //obtener productos
 		try {
-			let response = await fetch('https://urban-zebra-5657rgr46gph47wj-3001.app.github.dev/api/products/')
+			let response = await fetch(backendUrl + 'api/products/')
 			let data = await response.json()
 			setProducts(data)
 		}
