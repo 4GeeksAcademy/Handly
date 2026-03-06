@@ -1,0 +1,382 @@
+/* ─── VARIABLES ─── */
+:root {
+  --orange: rgb(224, 153, 21);
+  --orange-dark: rgb(190, 120, 5);
+  --orange-light: rgba(224, 153, 21, 0.12);
+}
+
+/* ─── HERO ─── */
+.hero {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    var(--orange) 0%,
+    rgb(240, 170, 30) 60%,
+    rgb(255, 200, 80) 100%
+  );
+  min-height: 90vh;
+  overflow: hidden;
+}
+
+.blob1 {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  top: -150px;
+  right: -100px;
+  pointer-events: none;
+}
+
+.blob2 {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  bottom: 0px;
+  left: -80px;
+  pointer-events: none;
+}
+
+.heroInner {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 60px 24px 100px;
+  position: relative;
+  z-index: 5;
+  animation: fadeSlide 0.8s ease both;
+}
+
+.heroBadge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 6px 16px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.heroTitle {
+  font-family: "Sora", sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.6rem, 6vw, 4.2rem);
+  color: #fff;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 20px;
+}
+
+.heroAccent {
+  color: #3b2000;
+}
+
+.heroSub {
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.88);
+  margin-bottom: 36px;
+  line-height: 1.6;
+}
+
+.heroCta {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 50px;
+}
+
+.ctaPrimary {
+  padding: 15px 34px;
+  border-radius: 999px;
+  background: #3b2000;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.ctaPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.ctaSecondary {
+  padding: 15px 34px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  backdrop-filter: blur(8px);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.ctaSecondary:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* ─── STATS ─── */
+.statsRow {
+  display: flex;
+  justify-content: center;
+  gap: 36px;
+  flex-wrap: wrap;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.statValue {
+  font-family: "Sora", sans-serif;
+  font-weight: 800;
+  font-size: 1.7rem;
+  color: #fff;
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+}
+
+/* ─── FLOATING CARDS ─── */
+.floatCard1 {
+  position: absolute;
+  left: 5%;
+  top: 42%;
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  animation: floatUp 4s ease-in-out infinite;
+  z-index: 5;
+}
+
+.floatCard2 {
+  position: absolute;
+  right: 6%;
+  top: 30%;
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  animation: floatUp 4s ease-in-out 1.5s infinite;
+  z-index: 5;
+}
+
+.floatTitle {
+  font-family: "Sora", sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #222;
+}
+
+.floatPrice {
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--orange);
+}
+
+/* ─── CATEGORIES ─── */
+.section {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+.sectionTitle {
+  font-family: "Sora", sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  color: #1a1a1a;
+  text-align: center;
+  margin-bottom: 48px;
+  letter-spacing: -0.5px;
+}
+
+.catGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 16px;
+}
+
+.catCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 12px;
+  background: #fff;
+  border-radius: 18px;
+  border: 1.5px solid #f0e8d5;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.catCard:hover {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 12px 30px rgba(224, 153, 21, 0.25);
+}
+
+.catIcon {
+  font-size: 2rem;
+}
+
+.catLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #444;
+  text-align: center;
+}
+
+/* ─── HOW IT WORKS ─── */
+.howSection {
+  background: linear-gradient(135deg, #2d1800 0%, #5a3200 100%);
+  padding: 80px 24px;
+}
+
+.howInner {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.howTitle {
+  font-family: "Sora", sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  color: #fff;
+  text-align: center;
+  margin-bottom: 48px;
+  letter-spacing: -0.5px;
+}
+
+.stepsRow {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+}
+
+.stepCard {
+  flex: 1 1 240px;
+  max-width: 280px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 32px 24px;
+  position: relative;
+}
+
+.stepNum {
+  font-family: "Sora", sans-serif;
+  font-weight: 800;
+  font-size: 2.8rem;
+  color: var(--orange);
+  line-height: 1;
+  margin-bottom: 16px;
+  opacity: 0.9;
+}
+
+.stepTitle {
+  font-family: "Sora", sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.stepDesc {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+}
+
+/* ─── CTA BANNER ─── */
+.ctaBanner {
+  text-align: center;
+  padding: 90px 24px;
+  background: #fdf8f0;
+}
+
+.bannerTitle {
+  font-family: "Sora", sans-serif;
+  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  color: #1a1a1a;
+  letter-spacing: -1px;
+  margin-bottom: 16px;
+}
+
+.bannerSub {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0 auto 36px;
+  max-width: 480px;
+}
+
+.bannerBtn {
+  display: inline-block;
+  padding: 16px 40px;
+  border-radius: 999px;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0 8px 28px rgba(224, 153, 21, 0.45);
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.bannerBtn:hover {
+  background: var(--orange-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(224, 153, 21, 0.55);
+}
+
+/* ─── FOOTER ─── */
+.footer {
+  background: #1a1a1a;
+  padding: 28px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footerLogo {
+  font-family: "Sora", sans-serif;
+  font-weight: 800;
+  font-size: 1.8rem;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.footerCopy {
+  color: #888;
+  font-size: 0.85rem;
+}

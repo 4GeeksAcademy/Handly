@@ -1,12 +1,17 @@
+
 from flask import Flask, request, jsonify, Blueprint
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
-from api.models.user import User
+from api.models.User import User
 from api.database.db import db
 import bcrypt
-
+import secrets
+from datetime import datetime, timedelta
+import os
+from flask_mail import Message
 
 api = Blueprint('api/user', __name__)
 
+url_front = os.getenv("VITE_FRONTEND_URL")
 
 # Login usuario existente / para Login usamos POST (se envia info)
 @api.route('/login', methods=['POST'])
@@ -22,7 +27,7 @@ def logIn():
         # convertir info del usuario que viene de la DB en un diccionario
         user_serialize = user.serialize()
         access_token = create_access_token(identity=str(user_serialize["id"]))
-        return jsonify({"msg": "Sign in completo", "access_token": access_token}), 200
+        return jsonify({"msg": "Sesion iniciada correctamente", "access_token": access_token, "user": user_serialize}), 200
     else:
         # en caso que la contrasena sea incorrecta
         return jsonify({"msg": "Login Incorrecto"}), 404
@@ -31,10 +36,6 @@ def logIn():
 @api.route('/sign-up', methods=['POST'])  # crear usuario nuevo
 def newUser():
     body = request.get_json()
-    # convierte contrasena en un formato bytes / encriptar contrasena
-    bytes = body["password"].encode('utf-8')
-    salt = bcrypt.gensalt()
-    password_encript = bcrypt.hashpw(bytes, salt)
 
     if body is None:
         return jsonify("Campos vacios"), 400
@@ -46,6 +47,11 @@ def newUser():
         return jsonify("Debes especificar un email"), 400
     if 'password' not in body:
         return jsonify("Debes especificar una contraseña"), 400
+
+# convierte contrasena en un formato bytes / encriptar contrasena
+    bytes = body["password"].encode('utf-8')
+    salt = bcrypt.gensalt()
+    password_encript = bcrypt.hashpw(bytes, salt)
 
     signUp = User(
         first_name=body["first_name"],
@@ -60,11 +66,12 @@ def newUser():
     # para cerrar los cambios (siempre que agregamos, editamos, eliminamos cosas)
     db.session.commit()
 
-    return jsonify("todo bien"), 200
+    return jsonify("usuario creado exitosamente"), 200
 
 
 @api.route('/deleteUser/<int:id>', methods=['DELETE'])  # borrar usuario
 def deleteUser(id):
+    # busca el primer ID que coincide, metodo mas antiguo
     user = User.query.filter_by(id=id).first()
 
     if user is None:
@@ -76,28 +83,79 @@ def deleteUser(id):
     return jsonify("Usuario borrado"), 200
 
 
-@api.route('/editUser/<int:id>', methods=['PUT']) #editar usuario
+@api.route('/editUser/<int:id>', methods=['PUT'])  # editar usuario
 def editUser(id):
     body = request.get_json()
-    '''bytes = body["password"].encode('utf-8')
-    salt = bcrypt.gensalt()
-    password_encript = bcrypt.hashpw(bytes, salt)'''
-
-    user = User.query.filter_by(id=id).first()
-
-    editarUsuario = User (
-        first_name=body["first_name"],
-        last_name=body["last_name"],
-        email=body["email"],
-        #password=password_encript.decode(),
-    )
+    user = db.session.get(User, id)  # busca usuario e ID
 
     if user is None:
         return jsonify("Usuario no existe"), 400
-    
-    #db.session.add(editarUsuario)
+
+    user.first_name = body["first_name"]
+    user.last_name = body["last_name"]
+    user.email = body["email"]
+    user.number = body["number"]
+
+
     db.session.commit()
-    
+
     return jsonify("Usuario editado con exito"), 200
 
 
+
+# endpoint forgot password
+
+
+@api.route('/forgot-password', methods=["POST"])
+def forgot_password():
+    body = request.get_json()
+
+    print(body["email"])
+
+    if not body or 'email' not in body:
+        return jsonify({"msg": "Email es requerido"}), 400
+
+    user = User.query.filter_by(email=body["email"]).first()
+
+    if not user:
+        return jsonify({"msg": "Si el email existe, recibirás un correo con instrucciones"}), 200
+
+    
+   
+    # Para pruebas, en producción no se debería enviar el token en la respuesta, sino por email
+    return jsonify({"msg": "Token generado correctamente", "reset_token": token}), 200
+
+
+@api.route('/reset-password', methods=["POST"])
+def reset_password():
+
+    body = request.get_json()
+
+    if not body or 'token' not in body or 'new_password' not in body:
+        return jsonify({"msg": "Token y nueva contraseña son requeridos"}), 400
+
+    user = User.query.filter_by(reset_token=body["token"]).first()
+
+    if not user:
+        return jsonify({"msg": "Token inválido"}), 400
+
+    # Verifica si el token ha expirado
+    if user.reset_token_expiration < datetime.utcnow():
+        return jsonify({"msg": "Token ha expirado"}), 400
+
+    # Hash de la nueva contraseña
+
+    password_bytes = body["new_password"].encode('utf-8')
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password_bytes, salt)
+
+    user.password = hashed_password.decode()  # Actualiza la contraseña del usuario
+
+    # Limpia el token y su fecha de expiración
+
+    user.reset_token = None
+    user.reset_token_expiration = None
+
+    db.session.commit()
+
+    return jsonify({"msg": "Contraseña restablecida correctamente"}), 200

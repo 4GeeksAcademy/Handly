@@ -1,8 +1,9 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import "./LoginForm.css";
 
 
-export const LoginForm = ({ onSubmit, error = null }) => {
+export const LoginForm = ({ onSubmit, error = null, setView }) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [errors, setErrors] = useState({})
@@ -36,67 +37,62 @@ export const LoginForm = ({ onSubmit, error = null }) => {
         }
 
         setErrors({})
+
         onSubmit({ email, password })
 
 
     }
     return (
-        <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
-            <div className="card shadow-sm border-0" style={{ width: "100%", maxWidth: "420px" }}>
-                <div className="card-body p-4">
-                    <h2 className="text-center text-primary mb-3">
-                        Health Support
-                    </h2>
-                    <p className="text-center text-muted mb-4">
-                        Inicia sesión en tu cuenta
-                    </p>
+        <div className="login-wrapper">
+            <div className="login-card">
+                <h3 className="login-title">Inicia sesión</h3>
 
-                    <form onSubmit={handleSubmit} noValidate>
-                      
-                        <div className="mb-3">
-                            <label className="form-label">Email</label>
-                            <input
-                                type="email"
-                                className={`form-control ${errors.email ? "is-invalid" : ""}`}
-                                placeholder="usuario@email.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                            {errors.email && (
-                                <div className="invalid-feedback">{errors.email}</div>
-                            )}
-                        </div>
+                <form className="login-form" onSubmit={handleSubmit} noValidate>
+                    <label className="login-label">Email</label>
+                    <input
+                        type="email"
+                        className={`login-input ${errors.email ? "invalid" : ""}`}
+                        placeholder="usuario@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    {errors.email && <div className="login-error">{errors.email}</div>}
 
+                    <label className="login-label">Contraseña</label>
+                    <input
+                        type="password"
+                        className={`login-input ${errors.password ? "invalid" : ""}`}
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    {errors.password && <div className="login-error">{errors.password}</div>}
 
-                        <div className="mb-3">
-                            <label className="form-label">Contraseña</label>
-                            <input
-                                type="password"
-                                className={`form-control ${errors.password ? "is-invalid" : ""}`}
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                            {errors.password && (
-                                <div className="invalid-feedback">{errors.password}</div>
-                            )}
-                        </div>
+                    <button type="submit" className="login-btn">
+                        Iniciar sesión
+                    </button>
+                </form>
 
-                        <button type="submit" className="btn btn-primary w-100">Iniciar sesión</button>
+                <div className="login-footer">
+                    <small>
+                        ¿No tienes cuenta?{" "}
+                        <span onClick={() => setView("register")} className="login-link">
+                            Únete!
+                        </span>
+                    </small>
+                </div>
 
-                    </form>
+                <div className="login-footer">
+                    <small>
+                        <Link to={"/recoverPassword"} className="login-link">
+                            ¿Haz olvidado tu constraseña?
 
-                    <div className="text-center mt-4">
-                        <small className="text-muted">
-                            ¿No tienes cuenta?{" "}
-                            <Link to="/register" className="text-primary fw-semibold">
-                                Regístrate
-                            </Link>
-                        </small>
-                    </div>
+                        </Link>
+                    </small>
                 </div>
             </div>
         </div>
+
     )
 }
 

@@ -1,6 +1,6 @@
 
 import click
-from api.models.user import User
+from api.models.User import User
 from api.database.db import db
 
 """
