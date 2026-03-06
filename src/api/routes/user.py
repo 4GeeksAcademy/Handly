@@ -18,6 +18,8 @@ api = Blueprint('api/user', __name__)
 url_front = os.getenv("VITE_FRONTEND_URL")
 
 # Login usuario existente / para Login usamos POST (se envia info)
+
+
 @api.route('/login', methods=['POST'])
 def logIn():
     body = request.get_json()
@@ -104,14 +106,12 @@ def editUser(id):
     return jsonify("Usuario editado con exito"), 200
 
 
-
 # endpoint forgot password
 
 
 @api.route('/forgot-password', methods=["POST"])
 def forgot_password():
     body = request.get_json()
-
 
     if not body or 'email' not in body:
         return jsonify({"msg": "Email es requerido"}), 400
@@ -120,33 +120,31 @@ def forgot_password():
 
     if not user:
         return jsonify({"msg": "Recibirás un correo con instrucciones"}), 200
-    
+
     token = secrets.token_urlsafe(32)
     user.reset_token = token
     user.reset_token_expiration = datetime.utcnow() + timedelta(minutes=15)
 
     db.session.commit()
 
-    frontend_url = os.getenv("FRONTEND_URL")
-
-    reset_url_password = f"{frontend_url}/change_password/{token}"
+    reset_url_password = f"{url_front}change_password/{token}"
 
     msg = Message(
         subject="Recuepración de contraseña",
         recipients=[user.email],
-       
+
         html=f"""
         <p>Para restablecer tu contraseña haz click 
         <a href="{reset_url_password}">aquí</a></p>
         """
     )
 
-    try: 
+    try:
         mail.send(msg)
     except Exception as e:
         print("Error enviando email:", e)
         return jsonify({"msg": "Error enviando email"}), 500
-    
+
     # Para pruebas, en producción no se debería enviar el token en la respuesta, sino por email
     return jsonify({"msg": "Recibiras instrucciones por correo"}), 200
 
