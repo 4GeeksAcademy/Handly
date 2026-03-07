@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import styles from "./Message.module.css";
+import { socket } from "./socket";
+
+
 
 
 const conversations = [
@@ -53,14 +56,33 @@ const conversations = [
             { text: "Mañana no habria problema, te parece a las 5 PM?", type: "sent" },
         ],
     },
-];
+]
 
 export function Message() {
-    const [activeChatId, setActiveChatId] = useState(1);
 
+    const [activeChatId, setActiveChatId] = useState(1);
     const activeChat = conversations.find(
         (conv) => conv.id === activeChatId
     );
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        socket.auth = { token };
+        socket.connect();
+
+        return () => {
+            socket.disconnect();
+        };
+    }, []);
+
+    socket.on("connect", () => {
+        console.log("Socket conectado:", socket.id);
+    });
+
+    socket.on("connect_error", (err) => {
+        console.log("Error socket:", err.message);
+    });
 
     return (
         <div className={styles.messageLayout}>
