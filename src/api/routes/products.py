@@ -2,7 +2,7 @@
 from flask import Blueprint, request, jsonify
 from api.database.db import db
 from api.models.Products import Products
-from flask_jwt_extended import  get_jwt_identity
+from flask_jwt_extended import  get_jwt_identity,  jwt_required
 
 api = Blueprint('api/products', __name__)
 
@@ -116,7 +116,8 @@ def get_category_products(category):
     return jsonify([product.serialize() for product in products]), 200
 
 
-@api.route ('/my-products', methods=["GET"])   # Obtener todos los productos de un usuario
+@api.route ('/my-products', methods=["GET"])# Obtener todos los productos de un usuario
+@jwt_required()   
 def get_my_products():
 
     user_id = int(get_jwt_identity())

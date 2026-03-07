@@ -5,7 +5,6 @@ import { Modal } from "bootstrap";
 const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 export function Profile() {
-    // const[userProducts, setUserProducts] = useState([]);
     const [user, setUser] = useState({
         id: null,
         first_name: "",
@@ -25,6 +24,7 @@ export function Profile() {
     })
     const [productSuccess, setProductSuccess] = useState(false);
     const [imageInput, setImageInput] = useState("");
+    const [listProducts, setListProducts] = useState([])
 
     const modalActualizarRef = useRef(null);
 
@@ -42,6 +42,7 @@ export function Profile() {
             }));
             // getUserProducts(parsedUser.id) // aqui pedimos los productos 
         }
+        getMyProducts()
     }, [])
 
     function handleAddImage() {
@@ -101,27 +102,29 @@ export function Profile() {
             alert("No se pudo actualizar el usuario");
         }
     }
-    //funcion obtener producto de usuario
-    //    async function getUserProducts(userId){
-    //         try {
-    //             const response = await fetch(´${backendUrl} ´)
-    //             if(!response) throw new Error("Error al obtener productos");
+    //funcion obtener todos los productos de usuario
+    async function getMyProducts() {
+        const token = localStorage.getItem("token")
+        const response = await fetch(`${backendUrl}api/products/my-products`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        })
+        const data = await response.json()
+        console.log("mis productos:", data)
+        if (Array.isArray(data)) {
+            setListProducts(data)
+        }
+    }
 
-    //             const data =await response.json();
-    //             setUserProducts(data);
-
-    //         } catch (error) {
-    //             console.log(error);
 
 
-    //         }
-
-    //     }
 
     //funcion borrar usuario
     async function deleteUser(id) {
         try {
-            const response = await fetch(`${backendUrl}/api/user/deleteUser/${id}`, {
+            const response = await fetch(`${backendUrl}api/user/deleteUser/${id}`, {
                 method: "DELETE",
             });
             if (!response.ok) throw new Error("Error al eliminar usuario");
@@ -272,6 +275,31 @@ export function Profile() {
                     <button type="button" className="btn btn-secondary col-4 text-light fw-semibold btn-lg" data-bs-toggle="modal" data-bs-target="#modalAñadirProducto">
                         Añadir Producto
                     </button>
+
+                </div>
+
+                <div className="p-4">
+                    <h3>Mis productos</h3>
+                    <div className="row g-3">
+                        {listProducts.map((product) => {
+                            const images = product.images
+                                ? product.images.replace(/[{}]/g, "").split(",")
+                                : [];
+                            return (
+                                <div className="col-6 col-md-4" key={product.id}>
+                                    <div className="card">
+                                        <img src={images[0]} className="card-img-top"
+                                            style={{ height: "200px", objectFit: "cover" }} />
+                                        <div className="card-body">
+                                            <p className="fw-bold fs-5 mb-1">{product.title}</p>
+                                            <p className="fs-5 mb-1">{product.price}€</p>
+                                            <p className="text-muted fs-6">{product.category}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
                 </div>
 
                 {/* modal actualizar */}
