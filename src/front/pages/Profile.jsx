@@ -123,6 +123,7 @@ export function Profile() {
 
     //funcion borrar usuario
     async function deleteUser(id) {
+        console.log("backendUrl:", backendUrl)
         try {
             const response = await fetch(`${backendUrl}api/user/deleteUser/${id}`, {
                 method: "DELETE",
