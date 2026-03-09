@@ -190,6 +190,22 @@ export function Profile() {
         }
     }
 
+    //funcion para eliminar producto
+    async function deleteProduct(id) {
+        console.log("backendUrl:", backendUrl)
+        try {
+            const response = await fetch(`${backendUrl}api/products/delete_product/${id}`, {
+                method: "DELETE",
+            });
+            if (!response.ok) throw new Error("Error al eliminar producto");
+            setListProducts(listProducts.filter((product) => product.id !== id))
+
+        } catch (error) {
+            console.error(error);
+
+        }
+    }
+
     return (
 
         <div className="container  py-4">
@@ -288,13 +304,20 @@ export function Profile() {
                                 : [];
                             return (
                                 <div className="col-6 col-md-4" key={product.id}>
-                                    <div className="card">
+                                    <div className="card-img-top">
                                         <img src={images[0]} className="card-img-top"
-                                            style={{ height: "200px", objectFit: "cover" }} />
+                                            style={{ height: "200px", objectFit: "cover", objectPosition: "center" }} />
+                                       
                                         <div className="card-body">
                                             <p className="fw-bold fs-5 mb-1">{product.title}</p>
                                             <p className="fs-5 mb-1">{product.price}€</p>
                                             <p className="text-muted fs-6">{product.category}</p>
+                                            <button className="btn btn-danger w-100 mt-2"
+                                            onClick={() => deleteProduct(product.id)}>
+                                                Eliminar
+                                            </button>
+
+
                                         </div>
                                     </div>
                                 </div>
