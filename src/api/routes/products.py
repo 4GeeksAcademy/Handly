@@ -2,11 +2,12 @@
 from flask import Blueprint, request, jsonify
 from api.database.db import db
 from api.models.Products import Products
-from flask_jwt_extended import  get_jwt_identity
+from flask_jwt_extended import get_jwt_identity,  jwt_required
 
 api = Blueprint('api/products', __name__)
 
-@api.route('/create', methods=['POST']) # Crear nuevo producto admin
+
+@api.route('/create', methods=['POST'])  # Crear nuevo producto admin
 def new_product():
     body = request.get_json()
 
@@ -22,14 +23,14 @@ def new_product():
         return jsonify({"error": "Debes especificar una categoría"}), 400
 
     new_product = Products(
-    user_id=int(body["g.user.id"]), # usar g.user.id mejor??
-    description=body["description"],
-    location=body["location"],
-    shipping=body.get("shipping", False),
-    title=body["title"],
-    images=body["images"],
-    price=body["price"],
-    category=body["category"]
+        user_id=int(body["g.user.id"]),  # usar g.user.id mejor??
+        description=body["description"],
+        location=body["location"],
+        shipping=body.get("shipping", False),
+        title=body["title"],
+        images=body["images"],
+        price=body["price"],
+        category=body["category"]
 
 
 
@@ -41,8 +42,9 @@ def new_product():
     return jsonify({"message": "Creado correctamente", "id": new_product.id}), 200
 
 
-@api.route('/get_product/<int:product_id>', methods=['GET'])    # Obtener producto por ID
-def get_product(product_id):    
+# Obtener producto por ID
+@api.route('/get_product/<int:product_id>', methods=['GET'])
+def get_product(product_id):
     print("hola")
     product = Products.query.filter_by(id=product_id).first()
 
@@ -58,7 +60,7 @@ def get_product(product_id):
         "title": product.title,
         "images": product.images,
         "price": product.price,
-         "seller_phone":product.author.number
+        "seller_phone": product.author.number
     }), 200
 
 
@@ -80,31 +82,28 @@ def update_product(product_id):
     product.images = body.get("images", product.images)
     product.price = body.get("price", product.price)
 
-    
-
-   
     db.session.commit()
 
     return jsonify({"message": "Producto actualizado correctamente", "id": product.id}), 200
-
-
-
 
 
 @api.route('/delete_product/<int:product_id>', methods=['DELETE'])
 def delete_product(product_id):
     product = Products.query.filter_by(id=product_id).first()
 
+    if product is None:
+        return jsonify({"error": "Producto no encontrado"}), 404
 
     db.session.delete(product)
-    db.session.commit()  
+    db.session.commit()
 
     return jsonify({"message": "Producto eliminado correctamente"}), 200
 
 
 @api.route('/', methods=['GET'])
 def get_products():
-    products = Products.query.order_by(Products.id.desc()).limit(20).all() # Traer como max 20 productos
+    products = Products.query.order_by(Products.id.desc()).limit(
+        20).all()  # Traer como max 20 productos
 
     return jsonify([product.serialize() for product in products]), 200
 
@@ -116,7 +115,9 @@ def get_category_products(category):
     return jsonify([product.serialize() for product in products]), 200
 
 
-@api.route ('/my-products', methods=["GET"])   # Obtener todos los productos de un usuario
+# Obtener todos los productos de un usuario
+@api.route('/my-products', methods=["GET"])
+@jwt_required()
 def get_my_products():
 
     user_id = int(get_jwt_identity())

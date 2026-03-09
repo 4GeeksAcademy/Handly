@@ -35,7 +35,7 @@ class User(db.Model):
 
 
 
-    products: Mapped[list["Products"]] = relationship("Products", back_populates="author")   # relacionar el producto con el user
+    products: Mapped[list["Products"]] = relationship("Products", back_populates="author", cascade="all, delete-orphan")   # relacionar el producto con el user  cascade="all, delete-orphan" hace tambien se borre los productos del usuario
 
     def serialize(self):  # lo que devuelve el modelo cuando se utiliza
         return {
