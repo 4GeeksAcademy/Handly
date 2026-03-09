@@ -17,7 +17,7 @@ export const RecoverPassword = () => {
 
         try {
 
-            const response = await fetch(`${BACKEND_URL}/api/user/forgot-password`, {
+            const response = await fetch(`${BACKEND_URL}api/user/forgot-password`, {
                 method: "POST",
                 headers: { "Content-type": "application/json" },
                 body: JSON.stringify({

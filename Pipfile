@@ -20,9 +20,8 @@ typing-extensions = "*"
 flask-jwt-extended = "==4.6.0"
 wtforms = "==3.1.2"
 sqlalchemy = "*"
-bcrypt = "*"
-flask-socketio = "*"
-eventlet = "*"
+flask-bcrypt = "*"
+tomli = "*"
 flask-mail = "*"
 
 [requires]
