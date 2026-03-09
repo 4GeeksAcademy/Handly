@@ -23,6 +23,7 @@ sqlalchemy = "*"
 flask-bcrypt = "*"
 tomli = "*"
 flask-mail = "*"
+flask-socketio = ">=5.3.6"
 
 [requires]
 python_version = "3.13"
