@@ -1,35 +1,211 @@
-import { element } from "prop-types";
 import Map from "../components/Map";
+import { useState, useEffect, useRef } from "react";
+import { Modal } from "bootstrap";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 export function Profile() {
+    const [user, setUser] = useState({
+        id: null,
+        first_name: "",
+        last_name: "",
+        email: "",
+        address: "",
+        number: ""
+    });
+
+    const [newProduct, setNewProduct] = useState({
+        title: "",
+        category: "",
+        description: "",
+        images: [], //array vacio por que se pondrian varias imagenes y fuese una sola imagen se deja ""
+        price: "",
+        location: ""
+    })
+    const [productSuccess, setProductSuccess] = useState(false);
+    const [imageInput, setImageInput] = useState("");
+    const [listProducts, setListProducts] = useState([])
+
+    const modalActualizarRef = useRef(null);
 
 
-    async function putUser(element) {
-        let user ={
-            "first_name":element.first_name,
-            "last_name": element.last_name,
-            "email": element.email,
-            "address": element.address,
-            "number" : element.number
+
+    //cargar usuario del localstorage al montar el componente
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+
+        if (storedUser) {
+            const parsedUser = JSON.parse(storedUser);
+            setUser(prev => ({
+                ...prev,
+                ...parsedUser
+            }));
+            // getUserProducts(parsedUser.id) // aqui pedimos los productos 
         }
-        await fetch(`https://jubilant-lamp-5vgvw4pv4rjf4967.github.dev/editUser/${element.id}`, {
-            method: "PUT",
-            body: JSON.stringify(user),
-            headers: { "Content-type": "application/json" }
+        getMyProducts()
+    }, [])
+
+    function handleAddImage() {
+        const trimmed = imageInput.trim();
+        if (!trimmed) return;
+        setNewProduct(prev => ({ ...prev, images: [...prev.images, trimmed] }));
+        setImageInput("");
+    }
+
+    function handleRemoveImage(index) {
+        setNewProduct(prev => ({
+            ...prev,
+            images: prev.images.filter((_, i) => i !== index)
+        }));
+    }
+
+    //funcion para actualizar usuario
+    async function putUser(user) {
+        let updatedUser = {
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "address": user.address,
+            "number": user.number
+        }
+
+        try {
+            const response = await fetch(`${backendUrl}api/user/editUser/${user.id}`, {
+
+
+                method: "PUT",
+                body: JSON.stringify(updatedUser),
+                headers: { "Content-type": "application/json" },
+            });
+            if (!response.ok) throw new Error("Error al actualizar usuario");
+            console.log(modalActualizarRef.current);
+
+            //actualizo el localstorage con los nuevos datos 
+            const userActualizado = { ...user, ...updatedUser };
+            localStorage.setItem("user", JSON.stringify(userActualizado))
+
+            //actualiza el estado de react
+            setUser(userActualizado)
+
+            //cierra el modal de forma segura
+            const modalEl = document.getElementById('modalActualizar');
+            const modalInstance = Modal.getInstance(modalEl);
+            if (modalInstance) {
+                modalInstance.hide();
+                document.body.classList.remove('modal-open');
+                document.querySelector('.modal-backdrop')?.remove();
+            }
+
+
+        } catch (error) {
+            console.error(error);
+            alert("No se pudo actualizar el usuario");
+        }
+    }
+    //funcion obtener todos los productos de usuario
+    async function getMyProducts() {
+        const token = localStorage.getItem("token")
+        const response = await fetch(`${backendUrl}api/products/my-products`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
         })
-
-
+        const data = await response.json()
+        console.log("mis productos:", data)
+        if (Array.isArray(data)) {
+            setListProducts(data)
+        }
     }
 
-        async function deleteUser(id) {
-		await fetch(`https://jubilant-lamp-5vgvw4pv4rjf4967.github.dev/deleteUser${id}`, {
-			method: "DELETE", // Accion / Metodo usado
-		})
-        
+
+
+
+    //funcion borrar usuario
+    async function deleteUser(id) {
+        console.log("backendUrl:", backendUrl)
+        try {
+            const response = await fetch(`${backendUrl}api/user/deleteUser/${id}`, {
+                method: "DELETE",
+            });
+            if (!response.ok) throw new Error("Error al eliminar usuario");
+
+            //limpia el localStorage
+            localStorage.removeItem("user");
+            //cierra el modal
+            const modalEl = document.getElementById('modalEliminar');
+            const modalInstance = Modal.getInstance(modalEl);
+            if (modalInstance) {
+                modalInstance.hide();
+                document.body.classList.remove('modal-open');
+                document.querySelector('.modal-backdrop')?.remove();
+            }
+
+            // Redirige al inicio
+            window.location.href = "/";
+
+        } catch (error) {
+            console.error(error);
+
+        }
     }
 
-   
+    //funcion crear producto
+    async function createProduct() {
+        try {
+            const storedUser = JSON.parse(localStorage.getItem("user"));
+            const productToSend = { ...newProduct, "g.user.id": storedUser.id };
+
+
+            const response = await fetch(`${backendUrl}api/products/create`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(productToSend)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error(data.error);
+                return;
+            }
+            //mostrar el mensaje 
+            setProductSuccess(true)
+
+            // ✅ Limpiar formulario
+            setNewProduct({ title: "", category: "", description: "", images: [], price: "", location: "" });
+            setImageInput("");
+
+            const modalEl = document.getElementById('modalActualizar');
+            const modalInstance = Modal.getInstance(modalEl);
+            if (modalAñadirProducto) {
+                modalInstance.hide();
+                document.body.classList.remove('modal-open');
+                document.querySelector('.modal-backdrop')?.remove();
+            }
+
+
+        } catch (error) {
+            console.error("Error creando producto:", error);
+        }
+    }
+
+    //funcion para eliminar producto
+    async function deleteProduct(id) {
+        console.log("backendUrl:", backendUrl)
+        try {
+            const response = await fetch(`${backendUrl}api/products/delete_product/${id}`, {
+                method: "DELETE",
+            });
+            if (!response.ok) throw new Error("Error al eliminar producto");
+            setListProducts(listProducts.filter((product) => product.id !== id))
+
+        } catch (error) {
+            console.error(error);
+
+        }
+    }
+
     return (
 
         <div className="container  py-4">
@@ -47,13 +223,24 @@ export function Profile() {
                         <div className="mb-3 w-50 bg-white  p-4 border border-2 shadow-sm rounded-4 border-start">
                             <span className="icon-box"><svg width="30px" height="30px" viewBox="-2.4 -2.4 28.80 28.80" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-2.4" y="-2.4" width="28.80" height="28.80" rx="5.76" fill="#c9f0fd" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 1C8.96243 1 6.5 3.46243 6.5 6.5C6.5 9.53757 8.96243 12 12 12C15.0376 12 17.5 9.53757 17.5 6.5C17.5 3.46243 15.0376 1 12 1Z" fill="#a2e0fb"></path> <path d="M7 14C4.23858 14 2 16.2386 2 19V22C2 22.5523 2.44772 23 3 23H21C21.5523 23 22 22.5523 22 22V19C22 16.2386 19.7614 14 17 14H7Z" fill="#a2e0fb"></path> </g></svg></span>
                             <label for="name" className="form-label fw-semibold ">Nombre</label>
-                            <input type="text" className="form-control   border-3 " id="name" aria-describedby="emailHelp" />
+                            <input type="text"
+                                className="form-control   
+                            border-3 "
+                                id="name"
+                                aria-describedby="emailHelp"
+                                value={user.first_name}
+                                onChange={(e) => setUser({ ...user, first_name: e.target.value })} />
                         </div>
 
                         <div className="mb-3 w-50 bg-white  p-4 border shadow-sm rounded-4">
                             <span><svg width="30px" height="30px" viewBox="-2.4 -2.4 28.80 28.80" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-2.4" y="-2.4" width="28.80" height="28.80" rx="5.76" fill="#c9f0fd" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 1C8.96243 1 6.5 3.46243 6.5 6.5C6.5 9.53757 8.96243 12 12 12C15.0376 12 17.5 9.53757 17.5 6.5C17.5 3.46243 15.0376 1 12 1Z" fill="#a2e0fb"></path> <path d="M7 14C4.23858 14 2 16.2386 2 19V22C2 22.5523 2.44772 23 3 23H21C21.5523 23 22 22.5523 22 22V19C22 16.2386 19.7614 14 17 14H7Z" fill="#a2e0fb"></path> </g></svg></span>
                             <label for="firstName" className="form-label  fw-semibold ">Apellido</label>
-                            <input type="text" className="form-control border-3" id="firstName" />
+                            <input type="text"
+                                className="form-control
+                              border-3"
+                                id="firstName"
+                                value={user.last_name}
+                                onChange={(e) => setUser({ ...user, last_name: e.target.value })} />
                         </div>
                     </div>
 
@@ -61,42 +248,86 @@ export function Profile() {
                         <div className="mb-3 w-50 bg-white  p-4 border shadow-sm rounded-4">
                             <span><svg width="30px" height="30px" viewBox="-3.2 -3.2 38.40 38.40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#d52a2a" stroke="#d52a2a" transform="matrix(-1, 0, 0, 1, 0, 0)"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-3.2" y="-3.2" width="38.40" height="38.40" rx="7.68" fill="#c9f0fd" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>mail</title> <desc>Created with Sketch Beta.</desc> <defs> </defs> <g id="Page-1" stroke-width="0.00032" fill="none" fill-rule="evenodd" sketch:type="MSPage"> <g id="Icon-Set-Filled" sketch:type="MSLayerGroup" transform="translate(-414.000000, -261.000000)" fill="#a2e0fb"> <path d="M430,275.916 L426.684,273.167 L415.115,285.01 L444.591,285.01 L433.235,273.147 L430,275.916 L430,275.916 Z M434.89,271.89 L445.892,283.329 C445.955,283.107 446,282.877 446,282.634 L446,262.862 L434.89,271.89 L434.89,271.89 Z M414,262.816 L414,282.634 C414,282.877 414.045,283.107 414.108,283.329 L425.147,271.927 L414,262.816 L414,262.816 Z M445,261 L415,261 L430,273.019 L445,261 L445,261 Z" id="mail" sketch:type="MSShapeGroup"> </path> </g> </g> </g></svg></span>
                             <label htmlFor="email" className="form-label fw-semibold">Correo Electronico</label>
-                            <input type="email" className="form-control border-3" id="email" />
+                            <input type="email"
+                                className="form-control 
+                             border-3"
+                                id="email"
+                                value={user.email}
+                                onChange={(e) => setUser({ ...user, email: e.target.value })} />
                         </div>
+
+
                         <div className="mb-3 w-50 bg-white  p-4 border shadow-sm rounded-4">
                             <span><svg width="30px" height="30px" viewBox="-1.6 -1.6 19.20 19.20" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"><rect x="-1.6" y="-1.6" width="19.20" height="19.20" rx="3.84" fill="#c9f0fd" strokewidth="0"></rect></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M1 5V1H7V5L4.5 7.5L8.5 11.5L11 9H15V15H11C5.47715 15 1 10.5228 1 5Z" fill="#a2e0fb"></path> </g></svg></span>
                             <label htmlFor="telephone" className="form-label fw-semibold">Telefono</label>
-                            <input type="number" className="form-control border-3" id="telephone" />
+                            <input type="number"
+                                className="form-control border-3"
+                                id="telephone"
+                                value={user.number}
+                                onChange={(e) => setUser({ ...user, number: e.target.value })} />
                         </div>
+
                     </div>
                 </form>
 
                 <div className="button-group p-4 d-flex gap-2">
                     {/* boton actualizar */}
                     <button type="button"
-                     className="btn btn-info col-4 text-light fw-semibold gap-2 btn-lg"
-                      data-bs-toggle="modal" 
-                      data-bs-target="#modalActualizar"
-                      onClick={()=>putUser(e)}
-                      >                      
+                        className="btn btn-info col-4 text-light fw-semibold gap-2 btn-lg"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalActualizar"
+
+                    >
                         Actualizar Información
                     </button>
                     {/* boton de eliminar */}
-                    <button type="button" 
-                    className="btn btn-danger col-4 text-light fw-semibold btn-lg" 
-                    data-bs-toggle="modal" 
-                    data-bs-target="#modalEliminar"
-                    onClick={deleteUser}>
+                    <button type="button"
+                        className="btn btn-danger col-4 text-light fw-semibold btn-lg"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalEliminar"
+                    >
                         Eliminar Cuenta
                     </button>
                     {/* boton añadir producto */}
                     <button type="button" className="btn btn-secondary col-4 text-light fw-semibold btn-lg" data-bs-toggle="modal" data-bs-target="#modalAñadirProducto">
                         Añadir Producto
                     </button>
+
+                </div>
+
+                <div className="p-4">
+                    <h3>Mis productos</h3>
+                    <div className="row g-3">
+                        {listProducts.map((product) => {
+                            const images = product.images
+                                ? product.images.replace(/[{}]/g, "").split(",")
+                                : [];
+                            return (
+                                <div className="col-6 col-md-4" key={product.id}>
+                                    <div className="card-img-top">
+                                        <img src={images[0]} className="card-img-top"
+                                            style={{ height: "200px", objectFit: "cover", objectPosition: "center" }} />
+                                       
+                                        <div className="card-body">
+                                            <p className="fw-bold fs-5 mb-1">{product.title}</p>
+                                            <p className="fs-5 mb-1">{product.price}€</p>
+                                            <p className="text-muted fs-6">{product.category}</p>
+                                            <button className="btn btn-danger w-100 mt-2"
+                                            onClick={() => deleteProduct(product.id)}>
+                                                Eliminar
+                                            </button>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
                 </div>
 
                 {/* modal actualizar */}
-                <div className="modal fade" id="modalActualizar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal fade" id="modalActualizar" ref={modalActualizarRef} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header flex-column position-relative text-center">
@@ -114,22 +345,42 @@ export function Profile() {
                                     <div class="mb-4">
                                         <div className=" col-12 col-md-12 bg-white  px-4 py-2  mb-4 fs-4">
                                             <label htmlFor="name" className="fw-semibold">Nombre</label>
-                                            <input type="text" className="form-control   border-3 " id="name" aria-describedby="emailHelp" />
+                                            <input type="text"
+                                                className="form-control   
+                                        border-3 " id="name"
+                                                aria-describedby="emailHelp"
+                                                value={user.first_name}
+                                                onChange={(e) => setUser({ ...user, first_name: e.target.value })} />
                                         </div>
 
                                         <div className="col-12 col-md-12 bg-white  px-4 py-2  mb-4 fs-4">
                                             <label htmlFor="firstName" className="form-label  fw-semibold ">Apellido</label>
-                                            <input type="text" className="form-control border-3" id="firstName" />
+                                            <input type="text"
+                                                className="form-control 
+                                        border-3"
+                                                id="firstName"
+                                                value={user.last_name}
+                                                onChange={(e) => setUser({ ...user, last_name: e.target.value })} />
                                         </div>
 
                                         <div className=" col-12 col-md-12 bg-white  px-4 py-2  mb-4 fs-4">
                                             <label htmlFor="email" className="form-label fw-semibold">Correo Electronico</label>
-                                            <input type="email" className="form-control border-3" id="email" />
+                                            <input type="email"
+                                                className="form-control 
+                                        border-3"
+                                                id="email"
+                                                value={user.email}
+                                                onChange={(e) => setUser({ ...user, email: e.target.value })} />
                                         </div>
 
                                         <div className=" col-12 col-md-12 bg-white  px-4 py-2  mb-4 fs-4">
                                             <label htmlFor="telephone" className="form-label fw-semibold">Telefono</label>
-                                            <input type="number" className="form-control border-3" id="telephone" />
+                                            <input type="number"
+                                                className="form-control 
+                                        border-3"
+                                                id="telephone"
+                                                value={user.number}
+                                                onChange={(e) => setUser({ ...user, number: e.target.value })} />
                                         </div>
 
                                     </div>
@@ -138,7 +389,7 @@ export function Profile() {
 
                             <div className="modal-footer">
                                 <div className='d-flex justify-content-center gap-2 '>
-                                    <button type="button" className="btn btn-info text-light ">Guardar Cambios</button>
+                                    <button type="button" className="btn btn-info text-light " onClick={() => putUser(user)}>Guardar Cambios</button>
                                     <button type="button" className="btn btn-outline-secondary " data-bs-dismiss="modal">Cancelar</button>
                                 </div>
                             </div>
@@ -147,9 +398,9 @@ export function Profile() {
                 </div>
 
                 {/* modal eliminar */}
-                <div class="modal fade" id="modalEliminar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
+                <div className="modal fade" id="modalEliminar" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
                             <div className="modal-header flex-column position-relative text-center">
                                 <button
                                     type="button"
@@ -162,7 +413,7 @@ export function Profile() {
                             </div>
                             <div class="modal-body">
                                 <h3 className='text-center '>Advertencia Importante</h3>
-                                <div class="texto-con-lista fs-5 ">
+                                <div className="texto-con-lista fs-5 ">
                                     <ul>
                                         <li>Perderás acceso a tu cuenta de forma permanente</li>
                                         <li>Todos tus datos serán eliminados</li>
@@ -173,7 +424,7 @@ export function Profile() {
 
                             <div className="modal-footer">
                                 <div className='d-flex justify-content-center gap-2 '>
-                                    <button type="button" className="btn btn-danger  text-light ">Eliminar Definitivamente</button>
+                                    <button type="button" className="btn btn-danger  text-light " onClick={() => deleteUser(user.id)}>Eliminar Definitivamente</button>
                                     <button type="button" className="btn btn-outline-secondary " data-bs-dismiss="modal">Cancelar</button>
                                 </div>
                             </div>
@@ -211,7 +462,9 @@ export function Profile() {
                                             </label>
                                             <input type="text"
                                                 className="form-control form-control-lg shadow-sm"
-                                                id="title" />
+                                                id="title"
+                                                value={newProduct.title}
+                                                onChange={(e) => setNewProduct({ ...newProduct, title: e.target.value })} />
                                         </div>
 
                                         <div className="mb-3">
@@ -219,16 +472,17 @@ export function Profile() {
                                                 Categoría
                                             </label>
                                             <select id="category"
+                                                value={newProduct.category}
+                                                onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
                                                 className="form-select form-select-lg shadow-sm">
                                                 <option value="">Selecciona una categoría</option>
-                                                <option value="informatica">Informática</option>
+                                                <option value="electronica">Electronica</option>
                                                 <option value="deportes">Deportes</option>
                                                 <option value="cine">Cine</option>
                                                 <option value="libros">Libros</option>
                                                 <option value="coleccionismo">Coleccionismo</option>
                                                 <option value="hogar">Hogar</option>
                                                 <option value="accesorios">Accesorios y Moda</option>
-                                                <option value="otros">Otros</option>
                                             </select>
                                         </div>
 
@@ -240,18 +494,63 @@ export function Profile() {
                                                 className="form-control shadow-sm"
                                                 rows="3"
                                                 id="description"
+                                                value={newProduct.description}
+                                                onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
                                             ></textarea>
                                         </div>
 
                                         <div className="mb-3">
-                                            <label htmlFor="image" className="form-label fw-semibold">
-                                                Subir imagen
+                                            <label htmlFor="images" className="form-label fw-semibold">
+                                                Imágenes
                                             </label>
-                                            <input
-                                                type="text"
-                                                className="form-control shadow-sm"
-                                                id="image"
-                                            />
+                                            <div className="d-flex gap-2">
+                                                <input
+                                                    type="text"
+                                                    className="form-control shadow-sm"
+                                                    id="images"
+                                                    placeholder="Pega una URL de imagen"
+                                                    value={imageInput}
+                                                    onChange={(e) => setImageInput(e.target.value)}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === "Enter") {
+                                                            e.preventDefault();
+                                                            handleAddImage();
+                                                        }
+                                                    }}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-info text-white fw-bold px-3"
+                                                    onClick={handleAddImage}
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
+
+                                            {/* Previews */}
+                                            {newProduct.images.length > 0 && (
+                                                <div className="d-flex flex-wrap gap-2 mt-2">
+                                                    {newProduct.images.map((url, index) => (
+                                                        <div key={index} className="position-relative" style={{ width: "70px", height: "70px" }}>
+                                                            <img
+                                                                src={url}
+                                                                alt={`img-${index}`}
+                                                                className="rounded-3 border object-fit-cover w-100 h-100"
+                                                                style={{ objectFit: "cover" }}
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleRemoveImage(index)}
+                                                                className="position-absolute top-0 end-0 btn btn-danger rounded-circle d-flex align-items-center justify-content-center p-0"
+                                                                style={{ width: "20px", height: "20px", fontSize: "12px", transform: "translate(40%, -40%)" }}
+                                                            >
+                                                                ×
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+
                                         </div>
 
                                         <div className="mb-3">
@@ -262,6 +561,8 @@ export function Profile() {
                                                 type="number"
                                                 className="form-control form-control-lg shadow-sm"
                                                 id="price"
+                                                value={newProduct.price}
+                                                onChange={(e) => setNewProduct({ ...newProduct, price: Number(e.target.value) })}
                                             />
                                         </div>
                                     </div>
@@ -269,11 +570,13 @@ export function Profile() {
                                     {/* COLUMNA DERECHA MAPA */}
                                     <div className="col-md-6 d-flex flex-column">
                                         <div className="flex-grow-1 border rounded-4 shadow-sm overflow-hidden">
-                                                      <Map />
-                                            </div>                                  
+                                            <Map onSelectLocation={(coords) =>
+                                                setNewProduct(prev => ({ ...prev, location: coords }))
+                                            } />
+                                        </div>
 
-                                       
-                                        </div>                                    
+
+                                    </div>
                                 </div>
                             </div>
 
@@ -288,14 +591,16 @@ export function Profile() {
 
                                 <button
                                     type="button"
-                                    className="btn btn-info text-white fw-semibold px-4 shadow-sm">
-                                        Añadir Producto
+                                    className="btn btn-info text-white fw-semibold px-4 shadow-sm"
+                                    onClick={createProduct}>
+                                    Añadir Producto
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
+
             </div>
         </div>
 

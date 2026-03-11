@@ -2,9 +2,7 @@
 from flask import Blueprint, request, jsonify
 from api.database.db import db
 from api.models.Products import Products
-
-
-
+from flask_jwt_extended import get_jwt_identity,  jwt_required
 
 api = Blueprint('api/products', __name__)
 
@@ -21,10 +19,8 @@ def new_product():
         return jsonify({"error": "Debes incluir al menos una imagen"}), 400
     if 'price' not in body:
         return jsonify({"error": "Debes especificar un precio"}), 400
-    if 'category_id' not in body:
+    if 'category' not in body:
         return jsonify({"error": "Debes especificar una categoría"}), 400
-    category_id= int(body["category_id"] )
-
 
     new_product = Products(
         user_id=int(body["g.user.id"]),  # usar g.user.id mejor??
@@ -34,19 +30,21 @@ def new_product():
         title=body["title"],
         images=body["images"],
         price=body["price"],
-        category_id=category_id
+        category=body["category"]
+
 
 
     )
 
-    db.session.add(new_product)  
+    db.session.add(new_product)
     db.session.commit()
 
     return jsonify({"message": "Creado correctamente", "id": new_product.id}), 200
 
 
-@api.route('/get_product/<int:product_id>', methods=['GET'])    # Obtener producto por ID
-def get_product(product_id):    
+# Obtener producto por ID
+@api.route('/get_product/<int:product_id>', methods=['GET'])
+def get_product(product_id):
     print("hola")
     product = Products.query.filter_by(id=product_id).first()
 
@@ -61,7 +59,8 @@ def get_product(product_id):
         "shipping": product.shipping,
         "title": product.title,
         "images": product.images,
-        "price": product.price
+        "price": product.price,
+        "seller_phone": product.author.number
     }), 200
 
 
@@ -83,31 +82,49 @@ def update_product(product_id):
     product.images = body.get("images", product.images)
     product.price = body.get("price", product.price)
 
-    
-
-   
     db.session.commit()
 
     return jsonify({"message": "Producto actualizado correctamente", "id": product.id}), 200
-
-
-
 
 
 @api.route('/delete_product/<int:product_id>', methods=['DELETE'])
 def delete_product(product_id):
     product = Products.query.filter_by(id=product_id).first()
 
+    if product is None:
+        return jsonify({"error": "Producto no encontrado"}), 404
 
     db.session.delete(product)
-    db.session.commit() 
+    db.session.commit()
 
     return jsonify({"message": "Producto eliminado correctamente"}), 200
 
 
-@api.route('/products', methods=['GET'])
+@api.route('/', methods=['GET'])
 def get_products():
-    products = Products.query.order_by(Products.id.desc()).limit(20).all() # Traer como max 20 productos
+    products = Products.query.order_by(Products.id.desc()).limit(
+        20).all()  # Traer como max 20 productos
 
     return jsonify([product.serialize() for product in products]), 200
 
+
+@api.route('/category/<category>', methods=['GET'])
+def get_category_products(category):
+    products = Products.query.filter_by(category=category).all()
+
+    return jsonify([product.serialize() for product in products]), 200
+
+
+# Obtener todos los productos de un usuario
+@api.route('/my-products', methods=["GET"])
+@jwt_required()
+def get_my_products():
+
+    user_id = int(get_jwt_identity())
+
+    products = Products.query\
+                       .filter_by(user_id=user_id)\
+                       .order_by(Products.id.desc())\
+                       .all()
+
+    return jsonify([product.serialize() for product in products]), 200
