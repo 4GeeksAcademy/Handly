@@ -1,6 +1,6 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import "./ContactMe.css"; 
+import "./ContactMe.css";
 
 export const ContactMe = () => {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -19,25 +19,48 @@ export const ContactMe = () => {
   return (
     <div className="contact-page">
       <h1>Contacta con nosotros</h1>
+
       <div className="contact-container">
 
-        
-        <div className="contact-info">
-          <h2>Información</h2>
-          <p><strong>Correo:</strong> contacto@handly.com</p>
-          <p><strong>Teléfono:</strong> +34 123 456 789</p>
-          <p><strong>Dirección:</strong> Calle Ejemplo 123, Madrid, España</p>
-          <div className="social-media">
-            <a href="https://twitter.com" target="_blank" rel="noreferrer">Twitter</a>
-            <a href="https://facebook.com" target="_blank" rel="noreferrer">Facebook</a>
-            <a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a>
+        {/* LADO IZQUIERDO */}
+        <div className="left-side">
+
+          <div className="contact-box">
+            <div className="contact-item">
+              <strong>Correo</strong>
+              <p>contacto@handly.com</p>
+            </div>
+
+            <div className="contact-item">
+              <strong>Teléfono</strong>
+              <p>+34 123 456 789</p>
+            </div>
+
+            <div className="contact-item">
+              <strong>Dirección</strong>
+              <p>Calle Ejemplo 123, Madrid, España</p>
+            </div>
           </div>
+
+          <div className="map-container">
+            <iframe
+              src="https://www.google.com/maps?q=Calle+Ejemplo+123+Madrid+España&output=embed"
+              width="100%"
+              height="300"
+              style={{ border: 0 }}
+              loading="lazy"
+            ></iframe>
+          </div>
+
         </div>
 
-        
+
+        {/* FORMULARIO */}
         <div className="contact-form-container">
           <h2>Envíanos un mensaje</h2>
+
           <form onSubmit={handleSubmit} className="contact-form">
+
             <input
               type="text"
               name="name"
@@ -46,6 +69,7 @@ export const ContactMe = () => {
               onChange={handleChange}
               required
             />
+
             <input
               type="email"
               name="email"
@@ -54,6 +78,7 @@ export const ContactMe = () => {
               onChange={handleChange}
               required
             />
+
             <textarea
               name="message"
               placeholder="Tu mensaje"
@@ -61,7 +86,9 @@ export const ContactMe = () => {
               onChange={handleChange}
               required
             ></textarea>
+
             <button type="submit">Enviar</button>
+
           </form>
         </div>
 
