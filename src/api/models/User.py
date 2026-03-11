@@ -20,6 +20,11 @@ class User(db.Model):
         String(9), unique=True, nullable=True)
     password: Mapped[str] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
+
+    #Recovery password
+    reset_token: Mapped[str] = mapped_column(String(100), nullable=True)  #Guarda el token generado para resetear la contraseña
+    reset_token_expiration: Mapped[datetime] = mapped_column(DateTime, nullable=True) #Guarda la fecha y hora de expiración del token, para que no sea válido después de cierto tiempo
+
     
     
     #relacion con tabla Chat
@@ -30,7 +35,7 @@ class User(db.Model):
 
 
 
-    products: Mapped[list["Products"]] = relationship("Products", back_populates="author")   # relacionar el producto con el user
+    products: Mapped[list["Products"]] = relationship("Products", back_populates="author", cascade="all, delete-orphan")   # relacionar el producto con el user  cascade="all, delete-orphan" hace tambien se borre los productos del usuario
 
     def serialize(self):  # lo que devuelve el modelo cuando se utiliza
         return {

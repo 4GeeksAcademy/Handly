@@ -1,7 +1,7 @@
 from api.database.db import db
 from sqlalchemy import String, Float, Boolean, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-     
+
 
 
 class Products(db.Model):
@@ -10,8 +10,7 @@ class Products(db.Model):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     author = relationship("User", back_populates="products")
 
-    category_id: Mapped[int] = mapped_column(ForeignKey("category.id"), nullable=False)
-    category = relationship("Category", back_populates="products")
+    category: Mapped[str] = mapped_column(String(100), nullable=False)
 
     title: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[str] = mapped_column(String(255), nullable=True)
@@ -22,9 +21,7 @@ class Products(db.Model):
 
     # products = relationship("User", back_populates="products")
 
- 
-
-    def serialize(self):  # lo que devuelve el modelo cuando se utiliza
+    def serialize(self):# lo que devuelve el modelo cuando se utiliza
         return {
             "id": self.id,
             "user_id": self.user_id,
@@ -34,8 +31,6 @@ class Products(db.Model):
             "images": self.images,
             "location": self.location,
             "shipping": self.shipping,
-            "category_id": self.category_id,
-        }
-
-
-
+            "category": self.category,
+            "seller_phone": self.author.number
+            }

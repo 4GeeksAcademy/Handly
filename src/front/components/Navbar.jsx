@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { RegisterForm } from "./RegisterForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoginForm } from "./LoginForm";
 import toast from 'react-hot-toast';
 const backendUrl = import.meta.env.VITE_BACKEND_URL
@@ -10,10 +10,22 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 export const Navbar = () => {
 
-
 	const { store, dispatch } = useGlobalReducer()
 	const navigate = useNavigate()
 	const [view, setView] = useState("login")
+	const [user, setUser] = useState(null)
+	const [dropdownOpen, setDropdownOpen] = useState(false)
+
+	useEffect(() => {
+		const storedUserData = localStorage.getItem('user');
+		if (storedUserData) {
+			const userData = JSON.parse(storedUserData);
+			setUser(userData)
+		}
+	}, [])
+	console.log(user)
+
+
 	const handleRegister = async (registerData) => {
 
 		dispatch({
@@ -60,7 +72,7 @@ export const Navbar = () => {
 	}
 
 	const handleLogin = async ({ email, password }) => {
-		const response = await fetch(backendUrl + "api/user/login/", {
+		const response = await fetch(backendUrl + "api/user/login", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
@@ -77,14 +89,13 @@ export const Navbar = () => {
 			})
 			return
 		}
+		console.log(data)
+		//Guardamos el token en el localStorage que devuelve el backend
 
-		localStorage.setItem("token", data.access_token) //Guardamos el token en el localStorage que devuelve el backend
+		localStorage.setItem("token", data.access_token)
 
-
-		dispatch({                      // Actualizamos el estado global con la información del usuario
-			type: "LOGIN",
-			payload: { email }
-		})
+		localStorage.setItem("user", JSON.stringify(data.user))
+		location.reload()
 		navigate("/")
 	}
 
@@ -102,7 +113,7 @@ export const Navbar = () => {
 							<div className="dropdown">
 								<button className="dropbtn">Categorías ▾</button>
 								<div className="dropdown-content">
-									<Link to="/category/informatica" className="dropdown-item">Informática</Link>
+									<Link to="/category/electronica" className="dropdown-item">Electronica</Link>
 									<Link to="/category/deportes" className="dropdown-item">Deportes</Link>
 									<Link to="/category/cine" className="dropdown-item">Cine</Link>
 									<Link to="/category/libros" className="dropdown-item">Libros</Link>
@@ -112,22 +123,74 @@ export const Navbar = () => {
 								</div>
 
 							</div>
-							<button type="button" class="navbtn1" data-bs-toggle="modal" data-bs-target="#exampleModal">
-								Iniciar Sesion
-							</button>
-							<button className="navbtn1">Explorar</button>
-							<button className="navbtn1" onClick={() => window.scrollTo(0, document.body.scrollHeight)}>
-								Más información
-							</button>
-								<button className="navbtn1" onClick={() => navigate("/contact")}>
-									Contacta con nosotros
-								</button>
+
+							{
+								user ? (
+									<div className="user-dropdown">
+										<button
+											className="user-dropdown-btn"
+											onClick={() => setDropdownOpen(!dropdownOpen)}
+										>
+											<div className="user-avatar">
+												{user.first_name.charAt(0)}{user.last_name.charAt(0)}
+											</div>
+											<span>{user.first_name} {user.last_name}</span>
+											<span className="arrow">{dropdownOpen ? "▴" : "▾"}</span>
+										</button>
+
+										{dropdownOpen && (
+											<div className="user-dropdown-menu">
+												<div className="user-dropdown-header">
+													<p className="user-fullname">{user.first_name} {user.last_name}</p>
+													<p className="user-email">{user.email}</p>
+												</div>
+
+												<div className="user-dropdown-divider" />
+
+												<Link to="/profile" className="user-dropdown-item" onClick={() => setDropdownOpen(false)}>
+													Mi perfil
+												</Link>
+												<Link to="/message" className="user-dropdown-item" onClick={() => setDropdownOpen(false)}>
+													Mensajes
+												</Link>
+
+												<div className="user-dropdown-divider" />
+
+												<button
+													className="user-dropdown-item user-dropdown-logout"
+													onClick={() => {
+														localStorage.removeItem("user");
+														localStorage.removeItem("token");
+														setUser(null);
+														setDropdownOpen(false);
+													}}
+												>
+													Cerrar sesión
+												</button>
+											</div>
+										)}
+									</div>
+								) : (
+									<>
+										<button type="button" class="navbtn1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+											Iniciar Sesion
+										</button>
+										<button className="navbtn1">Explorar</button>
+										<button className="navbtn1" onClick={() => window.scrollTo(0, document.body.scrollHeight)}>
+											Más información
+										</button>
+									</>
+								)
+							}
+
 						</div>
 
 
 					</div>
 				</div>
 			</nav>
+
+
 			<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
 				<div className="modal-dialog">

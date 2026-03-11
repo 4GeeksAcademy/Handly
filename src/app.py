@@ -13,10 +13,9 @@ from flask_jwt_extended import JWTManager
 from flask_socketio import SocketIO
 
 
-
-
 from flask_cors import CORS
 
+from extension import mail
 
 import api.routes.user as api_user
 
@@ -24,13 +23,28 @@ import api.routes.products as api_products
 
 import api.routes.category as api_category
 
+from flask_mail import Mail
+
+
 
 app = Flask(__name__)
-socketio = SocketIO(app) #chat
+
+
+socketio = SocketIO(app)  # chat
 # Permite acceder a las rutas con o sin barra al final (ejemplo: /api/user/login y /api/user/login/ serán tratados como la misma ruta)
 app.url_map.strict_slashes = False
 # Habilitar CORS para todas las rutas y métodos HTTP
 CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')
+
+mail.init_app(app)
 
 
 # from models import Person
@@ -56,6 +70,8 @@ app.config["JWT_SECRET_KEY"] = os.getenv(
 
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
+
+
 jwt = JWTManager(app)
 
 # add the admin
@@ -102,12 +118,10 @@ def serve_any_other_file(path):
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
+    socketio.run(app, debug=True)
     # use_reloader=False evita que se ejecute el código dos veces al iniciar el servidor
     app.run(host='0.0.0.0', port=PORT, debug=True, use_reloader=False)
 
-import socket_config
-#chat
-if __name__ == '__main__':  # condicion, si app es el archivo que estoy ejecutando, se corre el socketio
-    socketio.run(app, debug=True)
-
-
+# chat
+# condicion, si app es el archivo que estoy ejecutando, se corre el socketio
+   

@@ -1,0 +1,285 @@
+
+.root {
+  min-height: 100vh;
+  background: #f9f7f3;
+  font-family: "DM Sans", sans-serif;
+  padding-bottom: 64px;
+}
+
+/* ── Hero ── */
+.hero {
+  background: #1c1a14;
+  padding: 52px 32px 44px;
+}
+
+.heroInner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.breadcrumb {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.breadcrumb a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: rgb(224, 153, 21);
+}
+
+.title {
+  font-family: "Sora", sans-serif;
+  font-size: clamp(28px, 5vw, 44px);
+  font-weight: 700;
+  color: rgb(224, 153, 21);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+}
+
+.titleIcon {
+  font-size: 0.85em;
+  background: rgba(224, 153, 21, 0.15);
+  border-radius: 12px;
+  padding: 6px 12px;
+  line-height: 1;
+}
+
+.count {
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+}
+
+/* ── Body ── */
+.body {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  padding: 0 24px;
+}
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+/* ── Card ── */
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #ece8e0;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  animation: fadeUp 0.35s ease both;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.card:nth-child(1) {
+  animation-delay: 0s;
+}
+.card:nth-child(2) {
+  animation-delay: 0.05s;
+}
+.card:nth-child(3) {
+  animation-delay: 0.1s;
+}
+.card:nth-child(4) {
+  animation-delay: 0.15s;
+}
+.card:nth-child(5) {
+  animation-delay: 0.2s;
+}
+.card:nth-child(6) {
+  animation-delay: 0.25s;
+}
+.card:nth-child(7) {
+  animation-delay: 0.3s;
+}
+.card:nth-child(8) {
+  animation-delay: 0.35s;
+}
+.card:nth-child(9) {
+  animation-delay: 0.4s;
+}
+.card:nth-child(10) {
+  animation-delay: 0.45s;
+}
+.card:nth-child(11) {
+  animation-delay: 0.5s;
+}
+.card:nth-child(12) {
+  animation-delay: 0.55s;
+}
+
+/* ── Card image ── */
+.cardImg {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.cardPlaceholder {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #fdf3dc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+}
+
+/* ── Card body ── */
+.cardBody {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.cardTitle {
+  font-family: "Sora", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1c1a14;
+  line-height: 1.35;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardDesc {
+  font-size: 13px;
+  color: #9a9282;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cardLocation {
+  font-size: 12px;
+  color: #9a9282;
+}
+
+.cardShipping {
+  font-size: 11px;
+  background: #ecfdf5;
+  color: #059669;
+  border-radius: 20px;
+  padding: 2px 8px;
+  font-weight: 500;
+}
+
+/* ── Card footer ── */
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid #ece8e0;
+}
+
+.cardPrice {
+  font-family: "Sora", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1c1a14;
+}
+
+.cardLink {
+  background: rgb(224, 153, 21);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 25px;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.cardLink:hover {
+  background: rgb(200, 130, 10);
+}
+
+/* ── Empty state ── */
+.empty {
+  text-align: center;
+  padding: 80px 24px;
+  color: #9a9282;
+}
+
+.emptyIcon {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+
+.empty h2 {
+  font-family: "Sora", sans-serif;
+  color: #1c1a14;
+  margin: 0 0 8px;
+}
+
+.empty p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* ── Animation ── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
