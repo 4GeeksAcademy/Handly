@@ -1,142 +1,259 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import styles from "./Message.module.css";
+import { socket } from "./socket";
 
-const conversations = [
-    {
-        id: 1,
-        name: "Andrea",
-        preview: "Esta disponible?",
-        time: "2m",
-        avatar: "https://i.pinimg.com/1200x/aa/9e/61/aa9e61cea0749fbe84dce06c25754365.jpg",
-        product: "Vintage Chair",
-        messages: [
-            { text: "Esta disponible?", type: "received" },
-            { text: "Si! Sigue disponible", type: "sent" },
-        ],
-    },
-    {
-        id: 2,
-        name: "Daniel",
-        preview: "Aceptas 50?",
-        time: "1h",
-        avatar: "https://i.pinimg.com/736x/9b/42/94/9b4294942ca1c3a269ebd0458a967025.jpg",
-        product: "iPhone 14 Pro",
-        messages: [
-            { text: "Aceptas 50?", type: "received" },
-            { text: "Podría dejarlo en 60.", type: "sent" },
-        ],
-    },
-
-    {
-        id: 3,
-        name: "Juan Carlos",
-        preview: "Envias a Malaga?",
-        time: "2m",
-        avatar: "https://i0.wp.com/31minutosoficial.cl/wp-content/uploads/2014/02/thumb-bodoque.jpg?fit=640%2C640&ssl=1",
-        product: "Camara de fotos",
-        messages: [
-            { text: "Envias a Malaga?", type: "received" },
-            { text: "Si!, hago envios a Malaga", type: "sent" },
-        ],
-    },
-
-    {
-        id: 4,
-        name: "Laura",
-        preview: "Me interesa, puedo pasar por ella mañana?",
-        time: "2m",
-        avatar: "https://img.buzzfeed.com/buzzfeed-static/static/2025-03/13/18/subbuzz/UjLcjUoUE0.jpg?downsize=700%3A%2A&output-quality=auto&output-format=auto",
-        product: "Tabla de Surf",
-        messages: [
-            { text: "Me interesa, puedo pasar por ella mañana?", type: "received" },
-            { text: "Mañana no habria problema, te parece a las 5 PM?", type: "sent" },
-        ],
-    },
-];
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export function Message() {
-    const [activeChatId, setActiveChatId] = useState(1);
+  const [searchParams] = useSearchParams();
+  const initialChatId = searchParams.get("chat");
 
-    const activeChat = conversations.find(
-        (conv) => conv.id === activeChatId
-    );
+  const [conversations, setConversations] = useState([]);
+  const [activeChatId, setActiveChatId] = useState(initialChatId ? String(initialChatId) : null);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const messagesEndRef = useRef(null);
 
-    return (
-        <div className={styles.messageLayout}>
+  const token = localStorage.getItem("token");
+  const myUserId = localStorage.getItem("user_id");
 
+  const activeChat = conversations.find((c) => String(c.id) === String(activeChatId));
 
-            <aside className={styles.chatSidebar}>
-                <div className={styles.sidebarHeader}>
-                    <h2 className={styles.logo}>Handly</h2>
-                    <span className={styles.inboxTitle}>Inbox</span>
-                </div>
-
-                <div className={styles.searchBox}>
-                    <input placeholder="Buscar chats..." />
-                </div>
-
-                {conversations.map((conv) => (
-                    <div
-                        key={conv.id}
-                        onClick={() => setActiveChatId(conv.id)}
-                        className={`${styles.conversationItem} ${activeChatId === conv.id ? styles.active : ""
-                            }`}
-                    >
-                        <img src={conv.avatar} alt="" />
-                        <div>
-                            <div className={styles.convTop}>
-                                <span className={styles.convName}>{conv.name}</span>
-                                <span className={styles.convTime}>{conv.time}</span>
-                            </div>
-                            <div className={styles.convBottom}>
-                                {conv.preview}
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </aside>
+  // ── Auto scroll al último mensaje ──
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
 
-            <main className={styles.chatArea}>
+  // ── Conexión del socket ──
+  useEffect(() => {
+    socket.auth = { token };
+    socket.connect();
 
-                <div className={styles.chatHeader}>
-                    <div className={styles.chatUser}>
-                        <img src={activeChat.avatar} alt="" />
-                        <div>
-                            <div className={styles.chatName}>
-                                {activeChat.name}
-                            </div>
-                            <div className={styles.chatStatus}>
-                                Interesado en: {activeChat.product}
-                            </div>
-                        </div>
-                    </div>
+    socket.on("connect", () => {
+      console.log("Socket conectado:", socket.id);
+    });
 
-                    <button className={styles.viewListingBtn}>
-                        Ir a producto
-                    </button>
-                </div>
+    socket.on("connect_error", (err) => {
+      console.error("Error de conexión:", err.message);
+    });
 
-                <div className={styles.chatMessages}>
-                    {activeChat.messages.map((msg, index) => (
-                        <div
-                            key={index}
-                            className={`${styles.message} ${msg.type === "sent"
-                                ? styles.sent
-                                : styles.received
-                                }`}
-                        >
-                            {msg.text}
-                        </div>
-                    ))}
-                </div>
+    // Mensaje recibido en tiempo real
+    socket.on("receive_message", (msg) => {
+      setConversations((prev) =>
+        prev.map((c) =>
+          String(c.id) === String(msg.chat_id)
+            ? { ...c, preview: msg.message }
+            : c
+        )
+      );
+      setActiveChatId((currentChatId) => {
+        if (String(msg.chat_id) === String(currentChatId)) {
+          setMessages((prev) => {
+            const exists = prev.find(
+              (m) => m.message === msg.message && m.created_at === msg.created_at
+            );
+            if (exists) return prev;
+            return [...prev, msg];
+          });
+        }
+        return currentChatId;
+      });
+    });
 
-                <div className={styles.chatInputArea}>
-                    <input placeholder="Write a message..." />
-                    <button className={styles.sendBtn}>Send</button>
-                </div>
+    return () => {
+      socket.off("receive_message");
+      socket.off("connect");
+      socket.off("connect_error");
+      socket.disconnect();
+    };
+  }, []);
 
-            </main>
+
+  // ── Cargar lista de chats del usuario ──
+  useEffect(() => {
+    fetch(`${BACKEND_URL}api/chat/`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((chats) => {
+        setConversations(chats);
+
+        // Unirse a todas las salas
+        chats.forEach((chat) => {
+          socket.emit("join_chat", { token, chat_id: chat.id });
+        });
+
+        // Si venimos desde ProductDetail con un chat_id nuevo, asegurarnos que esté en la lista
+        if (initialChatId) {
+          const exists = chats.find((c) => String(c.id) === String(initialChatId));
+          if (!exists) {
+            // Traer el chat puntual del backend
+            fetch(`${BACKEND_URL}api/chat/`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+          }
+          socket.emit("join_chat", { token, chat_id: parseInt(initialChatId) });
+        }
+      })
+      .catch((err) => console.error("Error cargando chats:", err));
+  }, []);
+
+
+  // ── Cargar mensajes del chat activo ──
+  useEffect(() => {
+    if (!activeChatId) return;
+
+    fetch(`${BACKEND_URL}api/chat/${activeChatId}/messages`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((msgs) => setMessages(msgs))
+      .catch((err) => console.error("Error cargando mensajes:", err));
+  }, [activeChatId]);
+
+
+  // ── Seleccionar chat desde el sidebar ──
+  const joinChat = (conv) => {
+    setActiveChatId(String(conv.id));
+    setMessages([]);
+    socket.emit("join_chat", { token, chat_id: conv.id });
+  };
+
+
+  // ── Enviar mensaje ──
+  const sendMessage = () => {
+    if (!input.trim() || !activeChatId) return;
+
+    socket.emit("send_message", {
+      token,
+      chat_id: parseInt(activeChatId),
+      message: input.trim(),
+    });
+
+    setInput("");
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
+
+  return (
+    <div className={styles.messageLayout}>
+
+      {/* ── SIDEBAR ── */}
+      <aside className={styles.chatSidebar}>
+
+        <div className={styles.sidebarHeader}>
+          <h2 className={styles.logo}>Mensajes</h2>
         </div>
-    );
+
+
+        {conversations.length === 0 && (
+          <p className={styles.emptyState}>No tenés chats aún</p>
+        )}
+
+        {conversations.map((conv) => {
+          const otherUser = conv.other_user;
+          const name = otherUser
+            ? `${otherUser.first_name} ${otherUser.last_name}`
+            : conv.name || "Usuario";
+          const initial = otherUser
+            ? `${otherUser.first_name[0]}${otherUser.last_name[0]}`
+            : "U";
+
+          return (
+            <div
+              key={conv.id}
+              onClick={() => joinChat(conv)}
+              className={`${styles.conversationItem} ${String(activeChatId) === String(conv.id) ? styles.active : ""
+                }`}
+            >
+              <div className={styles.avatarCircle}>{initial}</div>
+              <div>
+                <div className={styles.convTop}>
+                  <span className={styles.convName}>{name}</span>
+                </div>
+                <div className={styles.convBottom}>
+                  {conv.preview || conv.last_message?.message || "Sin mensajes"}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+
+      </aside>
+
+
+      {/* ── CHAT AREA ── */}
+      <main className={styles.chatArea}>
+
+        {activeChat ? (
+          <>
+            {/* Header */}
+            <div className={styles.chatHeader}>
+              <div className={styles.chatUser}>
+                <div className={styles.avatarCircle}>
+                  {activeChat.other_user
+                    ? `${activeChat.other_user.first_name[0]}${activeChat.other_user.last_name[0]}`
+                    : "U"}
+                </div>
+                <div>
+                  <div className={styles.chatName}>
+                    {activeChat.other_user
+                      ? `${activeChat.other_user.first_name} ${activeChat.other_user.last_name}`
+                      : activeChat.name || "Usuario"}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Mensajes */}
+            <div className={styles.chatMessages}>
+              {messages.map((msg, index) => (
+                <div
+                  key={msg.message_id || index}
+                  className={`${styles.message} ${String(msg.sender_id) === String(myUserId)
+                    ? styles.sent
+                    : styles.received
+                    }`}
+                >
+                  {msg.message}
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input */}
+            <div className={styles.chatInputArea}>
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Escribe un mensaje..."
+              />
+              <button className={styles.sendBtn} onClick={sendMessage}>
+                Enviar
+              </button>
+            </div>
+
+          </>
+        ) : (
+          <div className={styles.noChat}>
+            <div className={styles.emptyState}>
+              <h3>Seleccioná un chat para comenzar</h3>
+              <p>Tus conversaciones aparecerán en el panel izquierdo.</p>
+            </div>
+          </div>
+        )}
+
+      </main>
+
+    </div>
+  );
 }

@@ -60,7 +60,9 @@ def get_product(product_id):
         "title": product.title,
         "images": product.images,
         "price": product.price,
-        "seller_phone": product.author.number
+        "seller_phone": product.author.number,
+        "category": product.category,
+        "author": product.author.first_name
     }), 200
 
 

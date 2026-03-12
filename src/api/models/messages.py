@@ -1,7 +1,10 @@
 from api.database.db import db
 from sqlalchemy import String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from datetime import datetime, timezone
 
+def currentTime(): #funcion para calcular el tiempo UTC de ahora
+    return datetime.now(timezone.utc)
 
 
 class Messages(db.Model):
@@ -17,20 +20,17 @@ class Messages(db.Model):
     chat: Mapped["Chat"] = relationship("Chat",back_populates="messages")
     #relacion Usuarios
     sender: Mapped["User"] = relationship("User",foreign_keys=[sender_id],back_populates="sent_messages")
-    #created_at: Mapped[datetime] = mapped_column(DateTime(), default=currentTime)
+    created_at: Mapped[datetime] = mapped_column(DateTime(), default=currentTime)
     
-   #created_by: User.user.id ???
 
     def serialize(self):  # lo que devuelve el modelo cuando se utiliza
+       
         return {
-            "message_id": self.id,
+            "id": self.id,
+            "chat_id": self.chat_id,
             "sender_id": self.sender_id,
             "message": self.message,
-            "chat_id": self.chat_id,
-            "created_at": self.created_at,
-            
-    
-           
+            "created_at": self.created_at.isoformat() if self.created_at else None
         }
 
 from api.models.User import User

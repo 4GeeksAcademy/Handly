@@ -10,7 +10,6 @@ class Chat(db.Model): #datetime espera DateTime y el parametro -default, onupdat
     __tablename__ = "chat"
     id: Mapped[int] = mapped_column(primary_key=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(), default=currentTime)
-    updated_at: Mapped[datetime] = mapped_column(DateTime(), onupdate=currentTime)
     sender_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     recipient_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
 
@@ -22,13 +21,11 @@ class Chat(db.Model): #datetime espera DateTime y el parametro -default, onupdat
     recipient: Mapped["User"] = relationship("User", foreign_keys=[recipient_id], back_populates="received_chats")
     
     
-    def serialize(self):  # lo que devuelve el modelo cuando se utiliza
+    def serialize(self):  #lo que devuelve el modelo cuando se usa
         return {
-            "chat_id": self.id,
+            "id": self.id,
             "sender_id": self.sender_id,
-            "recipient_id":self.recipient_id,
-            
+            "recipient_id": self.recipient_id,
         }
-    
 from api.models.User import User
 from api.models.messages import Messages
