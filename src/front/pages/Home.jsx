@@ -51,7 +51,7 @@ export function Home() {
 	useEffect(() => {
 		getProducts();
 	}, []);
-
+	console.log(products)
 
 	return (
 

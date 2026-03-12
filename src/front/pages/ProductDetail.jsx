@@ -12,32 +12,28 @@ import {
     Tag,
     MessageCircle,
     Heart,
+    User,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
 const backendUrl = import.meta.env.VITE_BACKEND_URL
 
-
-
-
 export default function ProductDetail() {
-    const { id } = useParams();  //obtengo el id de la URL
-    const [product, setProduct] = useState(null) // guardo el productpo
+    const { id } = useParams();
+    const [product, setProduct] = useState(null)
     const [currentImage, setCurrentImage] = useState(0);
     const navigate = useNavigate();
     const [liked, setLiked] = useState(false);
+    const user_id = localStorage.getItem("user_id");
 
+    console.log(user_id)
 
     useEffect(() => {
         async function getProduct() {
             const response = await fetch(`${backendUrl}api/products/get_product/${id}`)
             const data = await response.json()
-            console.log("producto recibido:", data);
-
             setProduct(data)
-
         }
         getProduct()
-
     }, [id])
 
     if (!product) return <p>Cargando...</p>
@@ -51,52 +47,54 @@ export default function ProductDetail() {
     const nextImage = () =>
         setCurrentImage((i) => (i === images.length - 1 ? 0 : i + 1));
 
-    const authorInitial = String(product.user_id)
+    const openChat = async () => {
+        try {
+            const token = localStorage.getItem("token");
 
-    
-const openChat = async () => {
-  try {
-    const token = localStorage.getItem("token");
+            if (!token) {
+                navigate("/login");
+                return;
+            }
 
-    const response = await fetch(`${backendUrl}api/chat/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        recipient_id: product.user_id,
-      }),
-    });
+            const response = await fetch(`${backendUrl}api/chat/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ recipient_id: product.user_id }),
+            });
 
-    if (!response.ok) {
-      console.error("Error al crear/obtener chat");
-      return;
-    }
+            if (!response.ok) {
+                console.error("Error al crear/obtener chat");
+                return;
+            }
 
-    const chat = await response.json();
+            const chat = await response.json();
+            navigate(`/message?chat=${chat.id}`);
+        } catch (error) {
+            console.error("Error al abrir chat:", error);
+        }
+    };
 
-    // Navegar pasando id + nombre del vendedor
-    navigate(
-      `/message?chat=${chat.id}&name=Usuario ${product.user_id}`
-    );
-  } catch (error) {
-    console.error("Error al abrir chat:", error);
-  }
-};
+    console.log(product)
 
     return (
         <div className={styles.container}>
+
+            {/* ── Volver ── */}
             <button
                 className={styles.backLink}
                 aria-label="Volver atras"
+                onClick={() => navigate(-1)}
             >
                 <ArrowLeft size={16} />
                 <span>Volver</span>
             </button>
 
             <div className={styles.layout}>
-                {/* ── Image Gallery ── */}
+
+                {/* ── Galería ── */}
                 <div className={styles.gallery}>
                     <div className={styles.mainImageWrapper}>
                         <img
@@ -130,10 +128,8 @@ const openChat = async () => {
                                 <button
                                     key={i}
                                     role="listitem"
-                                    className={`${styles.thumbnail} ${i === currentImage ? styles.thumbnailActive : ""
-                                        }`}
+                                    className={`${styles.thumbnail} ${i === currentImage ? styles.thumbnailActive : ""}`}
                                     onClick={() => setCurrentImage(i)}
-                                    aria-label={`Ver imagen ${i + 1}`}
                                 >
                                     <img
                                         className={styles.thumbnailImage}
@@ -146,17 +142,18 @@ const openChat = async () => {
                     )}
                 </div>
 
-                {/* ── sampleProduct Info ── */}
+                {/* ── Info ── */}
                 <section className={styles.info}>
-                    <span className={styles.categoryBadge}>{product.category?.name ?? "Sin categoria"}</span>
+
+                    <span className={styles.categoryBadge}>
+                        {product.category ?? "Sin categoria"}
+                    </span>
 
                     <h1 className={styles.title}>{product.title}</h1>
 
                     <p className={styles.price}>
                         <span className={styles.currency}>$</span>
-                        {product.price.toLocaleString("es-MX", {
-                            minimumFractionDigits: 2,
-                        })}
+                        {product.price.toLocaleString("es-MX", { minimumFractionDigits: 2 })}
                     </p>
 
                     <div className={styles.divider} />
@@ -165,12 +162,10 @@ const openChat = async () => {
                         <p className={styles.description}>{product.description}</p>
                     )}
 
-                    {/* Meta info */}
+                    {/* Meta */}
                     <div className={styles.metaList}>
                         <div className={styles.metaItem}>
-                            <div className={styles.metaIcon}>
-                                <MapPin size={18} />
-                            </div>
+                            <div className={styles.metaIcon}><MapPin size={18} /></div>
                             <div className={styles.metaContent}>
                                 <span className={styles.metaLabel}>Ubicacion</span>
                                 <span className={styles.metaValue}>{product.location}</span>
@@ -178,9 +173,7 @@ const openChat = async () => {
                         </div>
 
                         <div className={styles.metaItem}>
-                            <div className={styles.metaIcon}>
-                                <Tag size={18} />
-                            </div>
+                            <div className={styles.metaIcon}><Tag size={18} /></div>
                             <div className={styles.metaContent}>
                                 <span className={styles.metaLabel}>Categoria</span>
                                 <span className={styles.metaValue}>
@@ -190,62 +183,37 @@ const openChat = async () => {
                         </div>
 
                         <div className={styles.metaItem}>
-                            <div className={styles.metaIcon}>
-                                <Truck size={18} />
-                            </div>
+                            <div className={styles.metaIcon}><Truck size={18} /></div>
                             <div className={styles.metaContent}>
                                 <span className={styles.metaLabel}>Envio</span>
-                                <span
-                                    className={`${styles.shippingBadge} ${product.shipping
-                                        ? styles.shippingAvailable
-                                        : styles.shippingUnavailable
-                                        }`}
-                                >
-                                    {product.shipping
-                                        ? "Envio disponible"
-                                        : "Solo retiro en persona"}
+                                <span className={`${styles.shippingBadge} ${product.shipping ? styles.shippingAvailable : styles.shippingUnavailable}`}>
+                                    {product.shipping ? "Envio disponible" : "Solo retiro en persona"}
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Author */}
-              <div className={styles.authorCard} onClick={openChat}>
-    <div className={styles.authorAvatar}>{authorInitial}</div>
+                    {/* Vendedor */}
 
-    <div className={styles.authorInfo}>
-        <span className={styles.authorLabel}>
-            Contactar al vendedor
-        </span>
-
-        <span className={styles.authorName}>
-            {`Usuario ${product.user_id}`}
-        </span>
-    </div>
-</div>
-
-                    {/* Actions */}
-                    <div className={styles.actions}>
-                        {product.seller_phone && (
-                            <a href={`https://wa.me/${product.seller_phone}`}>
-                                <MessageCircle size={18} />
-                                Contactar por WhatsApp
-                            </a>
-                        )}
+                    {user_id != product.user_id && (
+                        <div className={styles.authorCard}>
+                            <div className={styles.authorAvatar}>
+                                <User size={20} />
+                            </div>
+                            <div className={styles.authorInfo}>
+                                <span className={styles.authorLabel}>Vendedor</span>
+                                <span className={styles.authorName}>{product.author}</span>
+                            </div>
+                            <button className={styles.btnPrimary} onClick={openChat}>
+                                <MessageCircle size={16} />
+                                Contactar
+                            </button>
+                        </div>
+                    )}
 
 
-                        <button
-                            className={styles.btnSecondary}
-                            onClick={() => setLiked(!liked)}
-                            aria-label={liked ? "Quitar de favoritos" : "Agregar a favoritos"}
-                        >
-                            <Heart
-                                size={20}
-                                fill={liked ? "currentColor" : "none"}
-                                style={{ color: liked ? "oklch(0.577 0.245 27.325)" : "inherit" }}
-                            />
-                        </button>
-                    </div>
+
+
                 </section>
             </div>
         </div>

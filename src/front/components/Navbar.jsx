@@ -93,7 +93,7 @@ export const Navbar = () => {
 		//Guardamos el token en el localStorage que devuelve el backend
 
 		localStorage.setItem("token", data.access_token)
-
+		localStorage.setItem("user_id", data.user.id);
 		localStorage.setItem("user", JSON.stringify(data.user))
 		location.reload()
 		navigate("/")

@@ -7,7 +7,6 @@ from api.models.messages import Messages
 from datetime import datetime, timezone
 
 
-
 api = Blueprint('chats', __name__)
 
 
@@ -40,19 +39,19 @@ def create_or_get_chat():
 
     if new_chat:
         from app import socketio
-    
+
         socketio.emit(
-        "new_chat",
-        {
-            "id": new_chat.id,
-            "name": f"Usuario {current_user_id}",
-            "avatar": "/default-avatar.png",
-            "product": "Producto",
-            "messages": [],
-            "sender_id": current_user_id,
-        },
-        to=f"user_{recipient_id}"  # room personal del usuario destinatario
-    )
+            "new_chat",
+            {
+                "id": new_chat.id,
+                "name": f"Usuario {current_user_id}",
+                "avatar": "/default-avatar.png",
+                "product": "Producto",
+                "messages": [],
+                "sender_id": current_user_id,
+            },
+            to=f"user_{recipient_id}"  # room personal del usuario destinatario
+        )
 
     return jsonify(new_chat.serialize()), 201
 
@@ -60,7 +59,7 @@ def create_or_get_chat():
 @api.route("/", methods=["GET"])
 @jwt_required()
 def get_my_chats():
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())  # convertir a int
 
     chats = Chat.query.filter(
         (Chat.sender_id == current_user_id) | (
@@ -98,5 +97,3 @@ def get_messages(chat_id):
     )
 
     return jsonify([m.serialize() for m in messages]), 200
-
-

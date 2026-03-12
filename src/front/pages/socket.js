@@ -1,8 +1,8 @@
 import { io } from "socket.io-client";
 
-const URL = "https://urban-zebra-5657rgr46gph47wj-3001.app.github.dev";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3001";
 
-export const socket = io(URL, {
-  autoConnect: false,
-  transports: ["websocket"], //conectar solo cuando tenga el token//
+export const socket = io(BACKEND_URL, {
+  autoConnect: false, // se conecta manualmente en el useEffect
+  transports: ["websocket"],
 });

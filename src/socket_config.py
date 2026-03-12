@@ -37,11 +37,8 @@ def on_connect(auth):
    
 
 
-
 @socketio.on("join_chat")
 def on_join(data):
-    print("data recibida:", data, type(data))
-
     if isinstance(data, str):
         data = json.loads(data)
 
@@ -49,27 +46,23 @@ def on_join(data):
     user_id = get_user_from_token(token)
     chat_id = data.get("chat_id")
 
-    print("===============")
-    print("user_id:", user_id, "chat_id:", chat_id)
-
     if not user_id or not chat_id:
-        print("Faltan datos")
         return
-    print("===============")
+
+    user_id = int(user_id)
+    chat_id = int(chat_id)
 
     chat = Chat.query.get(chat_id)
-    print("chat encontrado:", chat)  # debug
-    if not chat or (chat.sender_id != int(user_id) and chat.recipient_id != int(user_id)):
+    if not chat or (chat.sender_id != user_id and chat.recipient_id != user_id):
         emit("error", {"message": "No autorizado"})
         return
 
-    print("===============")
-
-    join_room(f"chat_{chat_id}")
-    print("===============")
-
+    room = f"chat_{chat_id}"
+    leave_room(room)  # salir primero para evitar duplicados
+    join_room(room)
     print(f"Usuario {user_id} unido al chat {chat_id}")
 
+    
 @socketio.on("send_message")
 def on_send_message(data):
     if isinstance(data, str):
