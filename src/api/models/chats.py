@@ -21,13 +21,11 @@ class Chat(db.Model): #datetime espera DateTime y el parametro -default, onupdat
     recipient: Mapped["User"] = relationship("User", foreign_keys=[recipient_id], back_populates="received_chats")
     
     
-    def serialize(self):  # lo que devuelve el modelo cuando se utiliza
-        return {
-            "chat_id": self.id,
-            "sender_id": self.sender_id,
-            "recipient_id":self.recipient_id,
-            
-        }
-    
+def serialize(self):  #lo que devuelve el modelo cuando se usa
+    return {
+        "id": self.id,
+        "sender_id": self.sender_id,
+        "recipient_id": self.recipient_id,
+    }
 from api.models.User import User
 from api.models.messages import Messages

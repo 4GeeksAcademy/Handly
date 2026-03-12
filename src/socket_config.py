@@ -1,3 +1,4 @@
+import json
 from flask_socketio import join_room, leave_room, emit
 from flask_jwt_extended import decode_token
 from api.database.db import db
@@ -31,29 +32,49 @@ def on_connect(auth):
         return False
 
     print(f"Usuario {user_id} conectado")
+        # unir a la room personal
+    join_room(f"user_{user_id}")
+   
+
 
 
 @socketio.on("join_chat")
 def on_join(data):
+    print("data recibida:", data, type(data))
+
+    if isinstance(data, str):
+        data = json.loads(data)
+
     token = data.get("token", "")
     user_id = get_user_from_token(token)
     chat_id = data.get("chat_id")
 
-    if not user_id or not chat_id:
-        return
+    print("===============")
+    print("user_id:", user_id, "chat_id:", chat_id)
 
-    # Verificar que el usuario pertenece al chat
+    if not user_id or not chat_id:
+        print("Faltan datos")
+        return
+    print("===============")
+
     chat = Chat.query.get(chat_id)
-    if not chat or (chat.sender_id != user_id and chat.recipient_id != user_id):
+    print("chat encontrado:", chat)  # debug
+    if not chat or (chat.sender_id != int(user_id) and chat.recipient_id != int(user_id)):
         emit("error", {"message": "No autorizado"})
         return
 
-    join_room(f"chat_{chat_id}")
-    print(f"Usuario {user_id} unido al chat {chat_id}")
+    print("===============")
 
+    join_room(f"chat_{chat_id}")
+    print("===============")
+
+    print(f"Usuario {user_id} unido al chat {chat_id}")
 
 @socketio.on("send_message")
 def on_send_message(data):
+    if isinstance(data, str):
+        data = json.loads(data)
+
     token = data.get("token", "")
     user_id = get_user_from_token(token)
     chat_id = data.get("chat_id")
@@ -62,22 +83,18 @@ def on_send_message(data):
     if not user_id or not chat_id or not message_text:
         return
 
-    # Verificar que el usuario pertenece al chat
     chat = Chat.query.get(chat_id)
-    if not chat or (chat.sender_id != user_id and chat.recipient_id != user_id):
+    if not chat or (chat.sender_id != int(user_id) and chat.recipient_id != int(user_id)):
         emit("error", {"message": "No autorizado"})
         return
 
-    # Guardar mensaje en la BD
     new_message = Messages(
-        chat_id=chat_id,
-        sender_id=user_id,
+        chat_id=int(chat_id),
+        sender_id=int(user_id),
         message=message_text,
     )
     db.session.add(new_message)
     db.session.commit()
 
-    # Emitir el mensaje a todos en la sala
     emit("receive_message", new_message.serialize(), to=f"chat_{chat_id}")
     print(f"Mensaje guardado y emitido en chat {chat_id}")
-

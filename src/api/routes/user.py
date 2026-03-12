@@ -26,7 +26,8 @@ def logIn():
     if bcrypt.checkpw(body["password"].encode(), user.password.encode()):
         # convertir info del usuario que viene de la DB en un diccionario
         user_serialize = user.serialize()
-        access_token = create_access_token(identity=str(user_serialize["id"]))
+        access_token = create_access_token(identity=str(
+            user_serialize["id"]), expires_delta=False)
         return jsonify({"msg": "Sesion iniciada correctamente", "access_token": access_token, "user": user_serialize}), 200
     else:
         # en caso que la contrasena sea incorrecta

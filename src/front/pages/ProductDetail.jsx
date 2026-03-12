@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"
 import styles from "./ProductDetail.module.css";
 import {
     ArrowLeft,
@@ -17,29 +18,31 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 
 
+
 export default function ProductDetail() {
-    const {id} = useParams();  //obtengo el id de la URL
-    const[product, setProduct] = useState(null) // guardo el productpo
+    const { id } = useParams();  //obtengo el id de la URL
+    const [product, setProduct] = useState(null) // guardo el productpo
     const [currentImage, setCurrentImage] = useState(0);
+    const navigate = useNavigate();
     const [liked, setLiked] = useState(false);
 
-   
-    useEffect(()=>{
+
+    useEffect(() => {
         async function getProduct() {
             const response = await fetch(`${backendUrl}api/products/get_product/${id}`)
             const data = await response.json()
             console.log("producto recibido:", data);
-            
+
             setProduct(data)
-            
-        }  
-        getProduct() 
-    
-    },[id])
-     
+
+        }
+        getProduct()
+
+    }, [id])
+
     if (!product) return <p>Cargando...</p>
 
-     const images = product.images
+    const images = product.images
         ? product.images.replace(/[{}]/g, "").split(",")
         : [];
 
@@ -50,7 +53,37 @@ export default function ProductDetail() {
 
     const authorInitial = String(product.user_id)
 
+    
+const openChat = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
+    const response = await fetch(`${backendUrl}api/chat/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        recipient_id: product.user_id,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error("Error al crear/obtener chat");
+      return;
+    }
+
+    const chat = await response.json();
+
+    // Navegar pasando id + nombre del vendedor
+    navigate(
+      `/message?chat=${chat.id}&name=Usuario ${product.user_id}`
+    );
+  } catch (error) {
+    console.error("Error al abrir chat:", error);
+  }
+};
 
     return (
         <div className={styles.container}>
@@ -177,23 +210,29 @@ export default function ProductDetail() {
                     </div>
 
                     {/* Author */}
-                    <div className={styles.authorCard}>
-                        <div className={styles.authorAvatar}>{authorInitial}</div>
-                        <div className={styles.authorInfo}>
-                            <span className={styles.authorLabel}>Publicado por</span>
-                            <span className={styles.authorName}>{`Usuario ${product.user_id}`}</span>
-                        </div>
-                    </div>
+              <div className={styles.authorCard} onClick={openChat}>
+    <div className={styles.authorAvatar}>{authorInitial}</div>
+
+    <div className={styles.authorInfo}>
+        <span className={styles.authorLabel}>
+            Contactar al vendedor
+        </span>
+
+        <span className={styles.authorName}>
+            {`Usuario ${product.user_id}`}
+        </span>
+    </div>
+</div>
 
                     {/* Actions */}
                     <div className={styles.actions}>
-                                        {product.seller_phone &&(
-                        <a href={`https://wa.me/${product.seller_phone}`}>
-                            <MessageCircle size={18} />
-                            Contactar por WhatsApp
+                        {product.seller_phone && (
+                            <a href={`https://wa.me/${product.seller_phone}`}>
+                                <MessageCircle size={18} />
+                                Contactar por WhatsApp
                             </a>
-                            )}
-                        
+                        )}
+
 
                         <button
                             className={styles.btnSecondary}
