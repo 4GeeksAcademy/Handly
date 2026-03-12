@@ -43,6 +43,7 @@ export const router = createBrowserRouter(
 
         <Route path="/recoverPassword" element={<RecoverPassword />} />
         <Route path="/changepassword" element={<ChangePassword />} />
+        <Route path="/change_password/:token" element={<ChangePassword />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="category/:categoryName" element={<CategoryPage />} />
         <Route path="product/:id" element={<ProductDetail />} />

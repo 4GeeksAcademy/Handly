@@ -9,11 +9,17 @@ from datetime import datetime, timedelta
 import os
 from flask_mail import Message
 
+from extension import mail
+
+token = secrets.token_urlsafe(32)
+
 api = Blueprint('api/user', __name__)
 
 url_front = os.getenv("VITE_FRONTEND_URL")
 
 # Login usuario existente / para Login usamos POST (se envia info)
+
+
 @api.route('/login', methods=['POST'])
 def logIn():
     body = request.get_json()
@@ -95,11 +101,12 @@ def editUser(id):
     user.first_name = body["first_name"]
     user.last_name = body["last_name"]
     user.email = body["email"]
+    user.number = body["number"]
+
 
     db.session.commit()
 
     return jsonify("Usuario editado con exito"), 200
-
 
 
 # endpoint forgot password
@@ -109,20 +116,40 @@ def editUser(id):
 def forgot_password():
     body = request.get_json()
 
-    print(body["email"])
-
     if not body or 'email' not in body:
         return jsonify({"msg": "Email es requerido"}), 400
 
     user = User.query.filter_by(email=body["email"]).first()
 
     if not user:
-        return jsonify({"msg": "Si el email existe, recibirás un correo con instrucciones"}), 200
+        return jsonify({"msg": "Recibirás un correo con instrucciones"}), 200
 
-    
-   
+    token = secrets.token_urlsafe(32)
+    user.reset_token = token
+    user.reset_token_expiration = datetime.utcnow() + timedelta(minutes=15)
+
+    db.session.commit()
+
+    reset_url_password = f"{url_front}change_password/{token}"
+
+    msg = Message(
+        subject="Recuepración de contraseña",
+        recipients=[user.email],
+
+        html=f"""
+        <p>Para restablecer tu contraseña haz click 
+        <a href="{reset_url_password}">aquí</a></p>
+        """
+    )
+
+    try:
+        mail.send(msg)
+    except Exception as e:
+        print("Error enviando email:", e)
+        return jsonify({"msg": "Error enviando email"}), 500
+
     # Para pruebas, en producción no se debería enviar el token en la respuesta, sino por email
-    return jsonify({"msg": "Token generado correctamente", "reset_token": token}), 200
+    return jsonify({"msg": "Recibiras instrucciones por correo"}), 200
 
 
 @api.route('/reset-password', methods=["POST"])
@@ -152,8 +179,8 @@ def reset_password():
 
     # Limpia el token y su fecha de expiración
 
-    user.reset_token = None
-    user.reset_token_expiration = None
+    user.reset_token = token
+    user.reset_token_expiration = datetime.utcnow() + timedelta(minutes=15)
 
     db.session.commit()
 

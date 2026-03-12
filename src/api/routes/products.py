@@ -2,7 +2,7 @@
 from flask import Blueprint, request, jsonify
 from api.database.db import db
 from api.models.Products import Products
-from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import get_jwt_identity,  jwt_required
 
 api = Blueprint('api/products', __name__)
 
@@ -93,6 +93,9 @@ def update_product(product_id):
 def delete_product(product_id):
     product = Products.query.filter_by(id=product_id).first()
 
+    if product is None:
+        return jsonify({"error": "Producto no encontrado"}), 404
+
     db.session.delete(product)
     db.session.commit()
 
@@ -116,6 +119,7 @@ def get_category_products(category):
 
 # Obtener todos los productos de un usuario
 @api.route('/my-products', methods=["GET"])
+@jwt_required()
 def get_my_products():
 
     user_id = int(get_jwt_identity())

@@ -6,11 +6,14 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 export const ChangePassword = () => {
 
     const { token } = useParams()
+    console.log(token)
     const navigate = useNavigate()
 
     const [password, setPassword] = useState("")
     const [message, setMessage] = useState("")
     const [loading, setLoading] = useState(false)
+
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -23,9 +26,9 @@ export const ChangePassword = () => {
         setMessage("")
 
         try {
-            const response = await fetch(`${BACKEND_URL}/api/reset-password`, {
+            const response = await fetch(`${BACKEND_URL}api/user/reset-password`, {
                 method: "POST",
-                header: {"Content-Type": "application/json"},
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
                     token,
                     new_password: password
@@ -34,6 +37,7 @@ export const ChangePassword = () => {
             const data = await response.json()
 
             if (response.ok){
+                setPassword("")
                 setMessage("Contraseña actualizada correctamente")
                 setTimeout(() => navigate("/login"), 2000)
             } else {

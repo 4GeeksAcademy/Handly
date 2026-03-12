@@ -11,11 +11,11 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_jwt_extended import JWTManager
 from flask_socketio import SocketIO
-from flask_mail import Mail
 
 
 from flask_cors import CORS
 
+from extension import mail
 
 import api.routes.user as api_user
 
@@ -23,10 +23,13 @@ import api.routes.products as api_products
 
 import api.routes.category as api_category
 
+from flask_mail import Mail
+
+
 import api.routes.chat as api_chats
 
 app = Flask(__name__)
-mail = Mail()
+
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 app.url_map.strict_slashes = False
@@ -35,10 +38,12 @@ CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = os.getenv('EMAIL')
-app.config['MAIL_PASSWORD'] = os.getenv('PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = os.getenv('EMAIL')
+
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')
+
+mail.init_app(app)
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
@@ -56,7 +61,7 @@ app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
-mail.init_app(app)
+
 
 jwt = JWTManager(app)
 
