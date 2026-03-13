@@ -31,7 +31,8 @@ import api.routes.chat as api_chats
 app = Flask(__name__)
 
 
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", manage_session=False,
+    async_mode="threading")
 app.url_map.strict_slashes = False
 CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
