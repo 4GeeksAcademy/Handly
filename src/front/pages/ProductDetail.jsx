@@ -166,13 +166,7 @@ export default function ProductDetail() {
 
                     {/* Meta */}
                     <div className={styles.metaList}>
-                        <div className={styles.metaItem}>
-                            <div className={styles.metaIcon}><MapPin size={18} /></div>
-                            <div className={styles.metaContent}>
-                                <span className={styles.metaLabel}>Ubicacion</span>
-                                <span className={styles.metaValue}>{product.location}</span>
-                            </div>
-                        </div>
+                        
 
                         <div className={styles.metaItem}>
                             <div className={styles.metaIcon}><Tag size={18} /></div>
@@ -213,19 +207,28 @@ export default function ProductDetail() {
                         </div>
                     )}
 
-
-
-
-                </section>
-                <div className={styles.mapWrap}>
+                    <div className={styles.metaItem}>
+                            <div className={styles.metaIcon}><MapPin size={18} /></div>
+                            <div className={styles.metaContent}>
+                                <span className={styles.metaLabel}>Ubicacion</span>
+                               
+                            </div>
+                        </div>
+  <div className={styles.mapWrap}>
 
                     <Map
                         onSelectLocation={(coords) =>
                             setLiked(prev => ({ ...prev, location: coords }))
                         }
                         coords={product.location ? JSON.parse(product.location) : null}
+                        readOnly={true}
                     ></Map>
                 </div>
+
+
+
+                </section>
+              
 
             </div>
         </div>
