@@ -133,7 +133,7 @@ def forgot_password():
     reset_url_password = f"{url_front}change_password/{token}"
 
     msg = Message(
-        subject="Recuepración de contraseña",
+        subject="Recuperación de contraseña",
         recipients=[user.email],
 
         html=f"""
