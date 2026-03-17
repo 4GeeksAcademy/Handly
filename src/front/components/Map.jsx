@@ -16,7 +16,7 @@ const initialPosition = {
     lng: -3.7038
 }
 
-const Map = () => {
+const Map = ({onSelectLocation}) => {
 
     const [position, setPosition] = useState(null);
     const [center,setCenter] = useState(initialPosition)
@@ -32,7 +32,7 @@ const Map = () => {
         //mueve el pin 
         setPosition(newPosition);
         //centra el mapa en el punto clickeado
-        setCenter(newPosition);                   
+        onSelectLocation(newPosition);                   
 
     }, []);
      return (

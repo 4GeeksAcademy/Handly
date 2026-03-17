@@ -92,7 +92,7 @@ export function Profile() {
     async function createProduct() {
         try {
             const storedUser = JSON.parse(localStorage.getItem("user"));
-            const productToSend = { ...newProduct, "g.user.id": storedUser.id };
+            const productToSend = { ...newProduct, "g.user.id": storedUser.id, location: JSON.stringify(newProduct.location) };
             const response = await fetch(`${backendUrl}api/products/create`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
