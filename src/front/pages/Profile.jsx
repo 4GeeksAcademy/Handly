@@ -377,9 +377,15 @@ export function Profile() {
                                 </div>
                                 <div className="col-md-6">
                                     <div className={styles.mapWrap}>
-                                        <Map onSelectLocation={(coords) =>
-                                            setNewProduct(prev => ({ ...prev, location: coords }))
-                                        } />
+                                        <Map
+                                            onSelectLocation={(coords) =>
+                                                setNewProduct(prev => ({ ...prev, location: coords }))
+                                            }
+                                            coords={{
+                                                lat: 40.4168,
+                                                lng: -3.7038
+                                            }}
+                                        />
                                     </div>
                                 </div>
                             </div>

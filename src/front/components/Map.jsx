@@ -16,7 +16,7 @@ const initialPosition = {
     lng: -3.7038
 }
 
-const Map = ({onSelectLocation}) => {
+const Map = ({onSelectLocation, coords}) => {
 
     const [position, setPosition] = useState(null);
     const [center,setCenter] = useState(initialPosition)

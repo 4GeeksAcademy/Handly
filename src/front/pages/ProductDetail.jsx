@@ -15,6 +15,7 @@ import {
     User,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
+import Map from "../components/Map";
 const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 export default function ProductDetail() {
@@ -76,6 +77,7 @@ export default function ProductDetail() {
             console.error("Error al abrir chat:", error);
         }
     };
+
 
     console.log(product)
 
@@ -215,6 +217,16 @@ export default function ProductDetail() {
 
 
                 </section>
+                <div className={styles.mapWrap}>
+
+                    <Map
+                        onSelectLocation={(coords) =>
+                            setLiked(prev => ({ ...prev, location: coords }))
+                        }
+                        coords={product.location ? JSON.parse(product.location) : null}
+                    ></Map>
+                </div>
+
             </div>
         </div>
     );
